@@ -1,9 +1,9 @@
 %% Dokumenteinstellungen
 \documentclass[
-type=Projektarbeit,
-status=draft, % Ändern zu "final" für die Abgabeversion
-language=german, % oder: "english"
-bibengine=bibtex,
+    type=Projektarbeit,
+    status=draft, % Ändern zu "final" für die Abgabeversion
+    language=german, % oder: "english"
+    bibengine=bibtex,
 ]{unibwm-inf-thesis}
 
 \usepackage{textcomp}
@@ -28,35 +28,61 @@ bibengine=bibtex,
 \usepackage{nameref}
 
 \begin{document}
-\tableofcontents
+    \tableofcontents
 
-\mainmatter
-\begin{abstract}
-    abstract
-\end{abstract}
-\chapter{Projekttagebuch}\label{ch:projekttagebuch}
-DPP -> Digitales Prüf- \& Produktionskonzept
-\section*{Woche 1: 04.07. - 08.07.}
-Montag - Mittwoch: Klausur\\
-Donnerstag: Besprechung Vorhaben, Zielsetzung, Ideensammlung\\
-Besprechung des Vorhabens: Anfängliche Ordnung der Ideen in MindMap.  \dots\\
-Ergebnis: Fokus des Praktikums: Computer Vision (Visuelle Überprüfung von Schaltschränken durch Kamerasystem)\\
-Betrachten Gegenstück bei DMG (Radmagazin-Prüfstand) \\
-Freitag: Anfängliche Machbarkeitsanalyse --> Ist es möglich, mit einer Tiefenkamera (\zB Intel RealSense) existierende Schaltschränke mit CAD-Zeichung zu vergleichen=
-
-\section*{Woche 2: 11.07. - 15.07.}
-\section*{Woche 3: 18.07. - 22.07.}
-\section*{Woche 4: 25.07. - 29.07.}
-\section*{Woche 5: 01.08. - 05.08.}
-\section*{Woche 6: 08.07. - 12.08.}
-\section*{Woche 7: 15.07. - 19.08.}
-\section*{Woche 8: 22.07. - 26.08.}
-\section*{Woche 9: 29.07. - 02.09.}
+    \mainmatter
+    \begin{abstract}
+        abstract
+    \end{abstract}
 
 
+    \chapter{Einleitung und Motivation}
 
-\bibliography{main}
 
-\input{erklaerung-unibw}
+    \chapter{Gesamtkonzept von DPP und Einordnung in Fertigungsprozess}
+
+
+    \chapter{Implementierung CV-Modul}
+    Teilmodul von AS DPP: DPP Visual\\
+    Ziel von DPP Visual: Sind alle notwendigen Bauteile vorhanden?
+    Sind die Bauteile an der richtigen Stelle verbaut?\\
+    Ansatz zur technischen Umsetzung: Anlernen durch Fotos der Bauteile.
+    Abgleich der Bilder des Schaltschranks mit Bildern der Bauteile --> Generierung von Keys mit Beschreibung, die
+    Übereinstimmung beschreiben.\\
+    Problem: Übereinstimmungen teilweise fehlerhaft \\
+    Lösung: Clustering der Positionen der Matches mittels KMeans-Algorithmus.
+    Vergleich der Ähnlichkeit der Farbhistogramme von Template und Cluster
+
+
+    \section{Programmiersprache}
+    Im Zuge der Implementierung des Moduls DPP Visual werden zahlreiche Methoden der Bildverarbeitung und des
+    Computer-Visions benötigt.
+    Zudem werden Algorithmen zum Umgang mit großen Datenmengen, wie Clustering verwendet.
+    Eine weitere Anforderung für den weiteren Verlauf ist die Unterstützung der Intel RealSense SDK, die benötigt wird,
+    um Aufnahmen der 3D-Kamera zu verarbeiten.
+
+    Eine Programmiersprache die diese Anforderungen allesamt erfüllt ist Python.
+    Diese bietet neben der Unterstützung der Intel RealSense SDK zahlreiche Libraries wie OpenCV, Numpy, Pandas,
+    Pillow etc., die bei der Lösung von Problemen in der Mathematik sowie der Computer-Vision unterstützen.
+
+    Diese Libraries können mit vergleichsweise geringem Aufwand über den Pip-Installer in die Anwendung integriert
+    werden, sodass der Funktionsumfang deutlich erweitert werden kann.
+
+    Für die Umsetzung der Testumgebung wurde zusätzlich das pythonbasierte Framework \textit{Flask} mit der
+    Template-Engine \textit{Jinja} herangezogen.
+    Diese Kombination ermöglicht es eine webbasierte Oberfläche umzusetzen, die das Testen mit einem mobilen Endgerät
+    (Tablet, Smartphone) ermöglicht und somit die simultane Überprüfung der Anwendungsergebnisse vereinfacht.
+
+
+    \section{Konzeption DPP Visual}
+
+
+    \chapter{Testumgebung CV-Modul}
+
+
+
+    \bibliography{main}
+
+    \input{erklaerung-unibw}
 
 \end{document}
