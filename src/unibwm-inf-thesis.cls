@@ -77,7 +77,7 @@
 % andere Werte werden als Option durchgereicht. Als Default geben wir
 % für natbib numerische Referenzen vor, da dies die Kompatibilität mit
 % mehr existierenden bibstyles gewähleistet, wenn BibTeX verwendet wird.
-\DeclareStringOption[numbers]{natbib}
+\DeclareStringOption[round]{natbib}
 
 % Abstand zwischen Absätzen statt Einrückung gewünscht?
 \newcommand{\@UniBwM@doskipfonts}{false}
@@ -100,25 +100,25 @@
 % Alle Optionen, die nicht zu unserer Schnittstelle gehören, werden an
 % scrbook weitergereicht.
 \DeclareDefaultOption{%
-\ifx\CurrentOptionValue\relax%
-\expandafter\KOMAoptions{\expandafter\CurrentOption}%
-\else%
-\expandafter\KOMAoptions{\CurrentOption=\CurrentOptionValue}%
-\fi%
+  \ifx\CurrentOptionValue\relax%
+  \expandafter\KOMAoptions{\expandafter\CurrentOption}%
+  \else%
+  \expandafter\KOMAoptions{\CurrentOption=\CurrentOptionValue}%
+  \fi%
 }
 
 \ProcessKeyvalOptions*
 
 % Prüfe Typ und Status
 \ifthenelse{\equal{\UniBwM@type}{}}{
-\ClassError{unibwm-inf-thesis}{Mandatory option undefined: type}{Please provide a value for the mandatory class option "type".}
+  \ClassError{unibwm-inf-thesis}{Mandatory option undefined: type}{Please provide a value for the mandatory class option "type".}
 }{}
 \def\@UniBwM@isbachelorormaster{false}
 \ifthenelse{\equal{\UniBwM@type}{bachelorthesis}}{\def\@UniBwM@isbachelorormaster{true}}{}
 \ifthenelse{\equal{\UniBwM@type}{mastersthesis}}{\def\@UniBwM@isbachelorormaster{true}}{}
 
 \ifthenelse{\equal{\UniBwM@status}{}}{
-\ClassError{unibwm-inf-thesis}{Mandatory option undefined: status}{Please provide a value for the mandatory class option "status".}
+  \ClassError{unibwm-inf-thesis}{Mandatory option undefined: status}{Please provide a value for the mandatory class option "status".}
 }{}
 \def\@UniBwM@validstatus{false}
 \ifthenelse{\equal{\UniBwM@status}{draft}}{\def\@UniBwM@validstatus{true}}{}
@@ -134,15 +134,15 @@
 
 % Verzichte auf das Laden von natbib, falls gewünscht
 \ifthenelse{\not\equal{\UniBwM@natbib}{skip}}{
-\ifthenelse{\equal{\UniBwM@bibengine}{bibtex}}
-{\usepackage[\UniBwM@natbib,sort&compress]{natbib}}
-{\PassOptionsToPackage{natbib}{biblatex}}
+  \ifthenelse{\equal{\UniBwM@bibengine}{bibtex}}
+  {\usepackage[\UniBwM@natbib,sort&compress]{natbib}}
+  {\PassOptionsToPackage{apalike}{biblatex}}
 }{}
 
 % Lade den Bibliografiestil, falls angegeben
 \ifthenelse{\not\equal{\UniBwM@bibstyle}{}}
 {\ifthenelse{\equal{\UniBwM@bibengine}{bibtex}}
-{\bibliographystyle{\UniBwM@bibstyle}}
+{}
 {\PassOptionsToPackage{style=\UniBwM@bibstyle}{biblatex}}
 }{}
 
@@ -219,12 +219,12 @@
 % Schriftarten, die sich eng an Computer Modern (LaTeX-Standardfont)
 % orientieren. Sie sehen insgesamt etwas besser aus und unterstützen
 % mehr europäische Sprachen.
-\RequirePackage{lmodern}
+  \RequirePackage{lmodern}
 % DejaVu Sans Mono ist eine moderne Festbreitenschrift, welche gut für
 % Code und Monospace-formatierte Textdaten auf dem Bildschirm oder im
 % Druck geeignet ist. Julian hätte lieber Inconsolata gehabt, diese hat
 % aber keine Italic-Version dabei und ist deshalb zu eingeschränkt.
-\RequirePackage[scaled=0.85]{DejaVuSansMono}
+  \RequirePackage[scaled=0.85]{DejaVuSansMono}
 }{}
 % Das microtype-Paket nimmt für den Anwender transparent eine Reihe von
 % kleinen typografischen Optimierungen vor.
@@ -253,17 +253,17 @@
 % Druckfreundliche Namen des Dokumenttypen ermitteln
 \newcommand{\@UniBwM@typename}{}
 \ifthenelse{\equal{\UniBwM@type}{bachelorthesis}}{%
-\renewcommand{\@UniBwM@typename}{%
-\IfLanguageName{ngerman}{Bachelorarbeit}{Bachelor thesis}}}{%
-\ifthenelse{\equal{\UniBwM@type}{mastersthesis}}{%
-\renewcommand{\@UniBwM@typename}{%
-\IfLanguageName{ngerman}{Masterarbeit}{Master's thesis}}}{%
-\ifthenelse{\equal{\UniBwM@type}{phdthesis}}{%
-\renewcommand{\@UniBwM@typename}{%
-\IfLanguageName{ngerman}{Dissertation}{Doctoral thesis}}}{%
-\ifthenelse{\equal{\UniBwM@type}{seminarpaper}}{%
-\renewcommand{\@UniBwM@typename}{%
-\IfLanguageName{ngerman}{Seminararbeit}{Seminar paper}}}{\renewcommand{\@UniBwM@typename}{\UniBwM@type}}}}}
+  \renewcommand{\@UniBwM@typename}{%
+    \IfLanguageName{ngerman}{Bachelorarbeit}{Bachelor thesis}}}{%
+  \ifthenelse{\equal{\UniBwM@type}{mastersthesis}}{%
+    \renewcommand{\@UniBwM@typename}{%
+      \IfLanguageName{ngerman}{Masterarbeit}{Master's thesis}}}{%
+    \ifthenelse{\equal{\UniBwM@type}{phdthesis}}{%
+      \renewcommand{\@UniBwM@typename}{%
+        \IfLanguageName{ngerman}{Dissertation}{Doctoral thesis}}}{%
+      \ifthenelse{\equal{\UniBwM@type}{seminarpaper}}{%
+        \renewcommand{\@UniBwM@typename}{%
+          \IfLanguageName{ngerman}{Seminararbeit}{Seminar paper}}}{\renewcommand{\@UniBwM@typename}{\UniBwM@type}}}}}
 
 
 % Wir geben einen Standardpfad für Abbildungen vor. Dem Nutzer steht es
@@ -287,8 +287,8 @@
 {\RequirePackage{etoolbox}\AfterEndPreamble{\frontmatter\maketitle\cleardoublepage}}
 % Analog für die Erklärung am Ende
 \ifthenelse{\equal{\@UniBwM@isbachelorormaster}{true}}{%
-\ifthenelse{\equal{\UniBwM@status}{final}}{%
-\AtEndDocument{\cleardoublepage\backmatter\makeaffidavit}}{}}{}
+  \ifthenelse{\equal{\UniBwM@status}{final}}{%
+    \AtEndDocument{\cleardoublepage\backmatter\makeaffidavit}}{}}{}
 
 % In dem folgenden "alten" Hook können wir unsere Textformatierung und
 % sonstige Tweaks vornehmen, bevor das eigentliche Dokument beginnt.
@@ -298,300 +298,300 @@
 % die PDF-Metadaten automatisch mit den passenden Informationen versehen.
 % Stattdessen kann für "license" ein Freitext angegeben und durch die
 % Option "licenseurl" ergänzt werden.
-\ifcsname UniBwM@license\endcsname
-\ifthenelse{\equal{\UniBwM@license}{cc-by 4.0}}{
-\def\UniBwM@license{Creative Commons \IfLanguageName{ngerman}{Namensnennung}{Attribution} 4.0 International (CC BY 4.0)}
-\def\UniBwM@licenseurl{https://creativecommons.org/licenses/by/4.0/}
-}{}
-\ifthenelse{\equal{\UniBwM@license}{cc-by-sa 4.0}}{
-\def\UniBwM@license{Creative Commons \IfLanguageName{ngerman}{Namensnennung - Weitergabe unter gleichen Bedingungen}{Attribution-ShareAlike} 4.0 International (CC BY-SA 4.0)}
-\def\UniBwM@licenseurl{https://creativecommons.org/licenses/by-sa/4.0/}
-}{}
-\ifthenelse{\equal{\UniBwM@license}{cc-by-nd 4.0}}{
-\def\UniBwM@license{Creative Commons \IfLanguageName{ngerman}{Namensnennung - Keine Bearbeitungen}{Attribution-NoDerivatives} 4.0 International (CC BY-ND 4.0)}
-\def\UniBwM@licenseurl{https://creativecommons.org/licenses/by-nd/4.0/}
-}{}
-\ifthenelse{\equal{\UniBwM@license}{cc-by-nc 4.0}}{
-\def\UniBwM@license{Creative Commons \IfLanguageName{ngerman}{Namensnennung - Nicht kommerziell}{Attribution-NonCommercial} 4.0 International (CC BY-NC 4.0)}
-\def\UniBwM@licenseurl{https://creativecommons.org/licenses/by-nc/4.0/}
-}{}
-\ifthenelse{\equal{\UniBwM@license}{cc-by-nc-sa 4.0}}{
-\def\UniBwM@license{Creative Commons \IfLanguageName{ngerman}{Namensnennung - Nicht-kommerziell - Weitergabe unter gleichen Bedingungen}{Attribution-NonCommercial-ShareAlike} 4.0 International (CC BY-NC-SA 4.0)}
-\def\UniBwM@licenseurl{https://creativecommons.org/licenses/by-nc-sa/4.0/}
-}{}
-\ifthenelse{\equal{\UniBwM@license}{cc-by-nc-nd 4.0}}{
-\def\UniBwM@license{Creative Commons \IfLanguageName{ngerman}{Namensnennung - Nicht-kommerziell - Keine Bearbeitung}{Attribution-NonCommercial-NoDerivatives} 4.0 International (CC BY-NC-ND 4.0)}
-\def\UniBwM@licenseurl{https://creativecommons.org/licenses/by-nc-nd/4.0/}
-}{}
-\ifthenelse{\equal{\UniBwM@license}{cc-0 1.0}}{
-\def\UniBwM@license{Creative Commons Zero 1.0 \IfLanguageName{ngerman}{Universell}{Universal} (CC0 1.0) Public Domain Dedication}
-\def\UniBwM@licenseurl{https://creativecommons.org/publicdomain/zero/1.0/}
-}{}
-\fi
+  \ifcsname UniBwM@license\endcsname
+  \ifthenelse{\equal{\UniBwM@license}{cc-by 4.0}}{
+    \def\UniBwM@license{Creative Commons \IfLanguageName{ngerman}{Namensnennung}{Attribution} 4.0 International (CC BY 4.0)}
+    \def\UniBwM@licenseurl{https://creativecommons.org/licenses/by/4.0/}
+  }{}
+  \ifthenelse{\equal{\UniBwM@license}{cc-by-sa 4.0}}{
+    \def\UniBwM@license{Creative Commons \IfLanguageName{ngerman}{Namensnennung - Weitergabe unter gleichen Bedingungen}{Attribution-ShareAlike} 4.0 International (CC BY-SA 4.0)}
+    \def\UniBwM@licenseurl{https://creativecommons.org/licenses/by-sa/4.0/}
+  }{}
+  \ifthenelse{\equal{\UniBwM@license}{cc-by-nd 4.0}}{
+    \def\UniBwM@license{Creative Commons \IfLanguageName{ngerman}{Namensnennung - Keine Bearbeitungen}{Attribution-NoDerivatives} 4.0 International (CC BY-ND 4.0)}
+    \def\UniBwM@licenseurl{https://creativecommons.org/licenses/by-nd/4.0/}
+  }{}
+  \ifthenelse{\equal{\UniBwM@license}{cc-by-nc 4.0}}{
+    \def\UniBwM@license{Creative Commons \IfLanguageName{ngerman}{Namensnennung - Nicht kommerziell}{Attribution-NonCommercial} 4.0 International (CC BY-NC 4.0)}
+    \def\UniBwM@licenseurl{https://creativecommons.org/licenses/by-nc/4.0/}
+  }{}
+  \ifthenelse{\equal{\UniBwM@license}{cc-by-nc-sa 4.0}}{
+    \def\UniBwM@license{Creative Commons \IfLanguageName{ngerman}{Namensnennung - Nicht-kommerziell - Weitergabe unter gleichen Bedingungen}{Attribution-NonCommercial-ShareAlike} 4.0 International (CC BY-NC-SA 4.0)}
+    \def\UniBwM@licenseurl{https://creativecommons.org/licenses/by-nc-sa/4.0/}
+  }{}
+  \ifthenelse{\equal{\UniBwM@license}{cc-by-nc-nd 4.0}}{
+    \def\UniBwM@license{Creative Commons \IfLanguageName{ngerman}{Namensnennung - Nicht-kommerziell - Keine Bearbeitung}{Attribution-NonCommercial-NoDerivatives} 4.0 International (CC BY-NC-ND 4.0)}
+    \def\UniBwM@licenseurl{https://creativecommons.org/licenses/by-nc-nd/4.0/}
+  }{}
+  \ifthenelse{\equal{\UniBwM@license}{cc-0 1.0}}{
+    \def\UniBwM@license{Creative Commons Zero 1.0 \IfLanguageName{ngerman}{Universell}{Universal} (CC0 1.0) Public Domain Dedication}
+    \def\UniBwM@licenseurl{https://creativecommons.org/publicdomain/zero/1.0/}
+  }{}
+  \fi
 % Da existierende Counter davon abhängen, welche Pakete geladen worden sind, können wir die Anpassung ers hier vornehmen.
-\ifthenelse{\equal{\UniBwM@floatnumbering}{without}\or\(\equal{\UniBwM@floatnumbering}{default}\and\not\equal{\UniBwM@type}{phdthesis}\)}{
-\counterwithout{figure}{chapter}
-\counterwithout{table}{chapter}
-\@ifpackageloaded{listings}{\lstset{numberbychapter=false}}
-}{}
+  \ifthenelse{\equal{\UniBwM@floatnumbering}{without}\or\(\equal{\UniBwM@floatnumbering}{default}\and\not\equal{\UniBwM@type}{phdthesis}\)}{
+    \counterwithout{figure}{chapter}
+    \counterwithout{table}{chapter}
+    \@ifpackageloaded{listings}{\lstset{numberbychapter=false}}
+  }{}
 % Wir setzen unser Dokument im sloppy-Modus, das reduziert übermäßig
 % strenge Hinweise auf hboxes/vboxes die nicht perfekt passen und genügt
 % allen Qualitätsansprüchen in unserem Bereich immer noch bequem.
-\sloppy
+  \sloppy
 % Wir erhöhen die für Seitenzahlen angesetzte Breite ein wenig. Dies
 % verhindert Warnungen bei Seitenzahlen über 100.
-\renewcommand*{\@pnumwidth}{3.0ex}
+  \renewcommand*{\@pnumwidth}{3.0ex}
 % Wir setzen URLs in Festbreitenschrift. Das ist in den letzten Jahren
 % langsam ein wenig aus der Mode gekommen, so heben sie sich jedoch
 % besser vom Rest des Textes ab.
-\urlstyle{tt}
+  \urlstyle{tt}
 % Wir formatieren unseren Text zur Steigerung der Lesbarkeit mit
 %1,5-fachem Zeilenabstand.
-\onehalfspacing
+  \onehalfspacing
 % Wir legen den Titel des Dokuments, welchen wir über eigene Kommandos
 % erhalten haben, vorsichtshalber auch in den LaTeX-Titel. Möglicherweise
 % vereinfacht das den Umgang mit den Metadaten.
-\ifcsname UniBwM@title\endcsname\title{\UniBwM@title}\fi
+  \ifcsname UniBwM@title\endcsname\title{\UniBwM@title}\fi
 % Gleiches gilt für den Autor/die Autoren, hier legen wir eine durch
 % Kommata getrennte Liste für die Verwendung vor allem in Metadaten an.
-\ifcsname UniBwM@author\endcsname
-\newcommand{\@UniBwM@authorlist}{%
-\UniBwM@author%
-\ifcsname UniBwM@authorB\endcsname, \UniBwM@authorB\fi%
-\ifcsname UniBwM@authorC\endcsname, \UniBwM@authorC\fi%
-\ifcsname UniBwM@authorD\endcsname, \UniBwM@authorD\fi%
-\ifcsname UniBwM@authorE\endcsname, \UniBwM@authorE\fi%
-\ifcsname UniBwM@authorF\endcsname, \UniBwM@authorF\fi%
-}%
-\fi
-\author{\@UniBwM@authorlist}
+  \ifcsname UniBwM@author\endcsname
+  \newcommand{\@UniBwM@authorlist}{%
+    \UniBwM@author%
+    \ifcsname UniBwM@authorB\endcsname, \UniBwM@authorB\fi%
+    \ifcsname UniBwM@authorC\endcsname, \UniBwM@authorC\fi%
+    \ifcsname UniBwM@authorD\endcsname, \UniBwM@authorD\fi%
+    \ifcsname UniBwM@authorE\endcsname, \UniBwM@authorE\fi%
+    \ifcsname UniBwM@authorF\endcsname, \UniBwM@authorF\fi%
+  }%
+  \fi
+  \author{\@UniBwM@authorlist}
 % Hier speichern wir die verfügbaren Metadaten via hyperxmp in die
 % Ausgabe-PDF.
-\ifcsname UniBwM@title\endcsname\hypersetup{pdftitle={\UniBwM@title}}\fi
-\ifcsname @UniBwM@authorlist\endcsname\hypersetup{pdfauthor={\@UniBwM@authorlist}}\fi
-\ifcsname UniBwM@keywords\endcsname\hypersetup{pdfkeywords={\UniBwM@keywords}}\fi
-\ifthenelse{\equal{\UniBwM@status}{draft}}
-{\hypersetup{pdfsubject={\@UniBwM@typename{} (Zwischenstand), Fakultät für Informatik, Universität der Bundeswehr München}}}
-{\hypersetup{pdfsubject={\@UniBwM@typename{}, Fakultät für Informatik, Universität der Bundeswehr München}}}
-\ifcsname UniBwM@license\endcsname
-\ifthenelse{\not\equal{\UniBwM@license}{}}{
-\hypersetup{pdfcopyright={\IfLanguageName{ngerman}{Diese Arbeit ist unter der folgenden Lizenz veröffentlicht}{This document is published under the following license}: \UniBwM@license}}}{}
-\ifcsname UniBwM@licenseurl\endcsname
-\ifthenelse{\not\equal{\UniBwM@licenseurl}{}}{
-\hypersetup{pdflicenseurl={\UniBwM@licenseurl}}}{}
-\fi
-\fi
+  \ifcsname UniBwM@title\endcsname\hypersetup{pdftitle={\UniBwM@title}}\fi
+  \ifcsname @UniBwM@authorlist\endcsname\hypersetup{pdfauthor={\@UniBwM@authorlist}}\fi
+  \ifcsname UniBwM@keywords\endcsname\hypersetup{pdfkeywords={\UniBwM@keywords}}\fi
+  \ifthenelse{\equal{\UniBwM@status}{draft}}
+  {\hypersetup{pdfsubject={\@UniBwM@typename{} (Zwischenstand), Fakultät für Informatik, Universität der Bundeswehr München}}}
+  {\hypersetup{pdfsubject={\@UniBwM@typename{}, Fakultät für Informatik, Universität der Bundeswehr München}}}
+  \ifcsname UniBwM@license\endcsname
+  \ifthenelse{\not\equal{\UniBwM@license}{}}{
+    \hypersetup{pdfcopyright={\IfLanguageName{ngerman}{Diese Arbeit ist unter der folgenden Lizenz veröffentlicht}{This document is published under the following license}: \UniBwM@license}}}{}
+  \ifcsname UniBwM@licenseurl\endcsname
+  \ifthenelse{\not\equal{\UniBwM@licenseurl}{}}{
+    \hypersetup{pdflicenseurl={\UniBwM@licenseurl}}}{}
+  \fi
+  \fi
 
 % Kleine Anpassung des APA-Stils von BibLaTeX:
-\@ifpackageloaded{biblatex}{
-\ifthenelse{\equal{\UniBwM@bibstyle}{apa}}{
+  \@ifpackageloaded{biblatex}{
+    \ifthenelse{\equal{\UniBwM@bibstyle}{apa}}{
 % Etwas weniger Einrückung
-\setlength{\bibhang}{2.5em}
+      \setlength{\bibhang}{2.5em}
 % Etwas Abstand zwischen den Einträgen
-\setlength{\bibitemsep}{.5em}
+      \setlength{\bibitemsep}{.5em}
 % Zeige die ISBN an, wenn vorhanden
-\renewbibmacro*{doi+url}{%
-  \printfield{isbn}%
-  \newunit\newblock
-  \iftoggle{bbx:doi}
-    {\printfield{doi}%
-     \iffieldundef{doi}{}{\renewcommand*{\finentrypunct}{\relax}}}
-    {}%
-  \newunit\newblock
-  \iftoggle{bbx:url}
-    {\usebibmacro{url+urldate}%
-     \iffieldundef{url}{}{\renewcommand*{\finentrypunct}{\relax}}}
-    {}}
-}{}}
+      \renewbibmacro*{doi+url}{%
+        \printfield{isbn}%
+        \newunit\newblock
+        \iftoggle{bbx:doi}
+        {\printfield{doi}%
+        \iffieldundef{doi}{}{\renewcommand*{\finentrypunct}{\relax}}}
+        {}%
+        \newunit\newblock
+        \iftoggle{bbx:url}
+        {\usebibmacro{url+urldate}%
+        \iffieldundef{url}{}{\renewcommand*{\finentrypunct}{\relax}}}
+        {}}
+    }{}}
 
 % Tweaks für das listings-Paket:
-\@ifpackageloaded{listings}{
+  \@ifpackageloaded{listings}{
 % Wir definieren ein paar Listing-Stile, welche frei verwendet werden
 % können. Der Standardstil verwendet UniBwM-Farben.
-\lstdefinestyle{UniBwM}{
-keywordstyle=\bfseries\color{UniBwMorange},
-keywordstyle={[2]\itshape\color{UniBwMorange}},
-keywordstyle={[3]\color{UniBwMorange}},
-commentstyle=\itshape\color{gray},
-stringstyle=\color{Blue},
-}
-\lstdefinestyle{ClassicLight}{
-keywordstyle=\bfseries\color{NavyBlue},
-keywordstyle={[2]\bfseries\color{Fuchsia}},
-keywordstyle={[3]\itshape\color{DarkOrchid}},
-commentstyle=\itshape\color{gray},
-stringstyle=\color{ForestGreen},
-}
-\lstdefinestyle{ClassicDark}{
-basicstyle=\linespread{1.1}\ttfamily\color{white},
-backgroundcolor=\color{white!20!black},
-frame=single,
-framesep=.3em,
-framexleftmargin=.5em,
-framexrightmargin=.5em,
-keywordstyle=\bfseries\color{ProcessBlue},
-keywordstyle={[2]\bfseries\color{BurntOrange}},
-keywordstyle={[3]\itshape\color{DarkOrchid}},
-commentstyle=\itshape\color{Periwinkle},
-stringstyle=\color{YellowGreen},
-}
-\lstset{
+    \lstdefinestyle{UniBwM}{
+      keywordstyle=\bfseries\color{UniBwMorange},
+      keywordstyle={[2]\itshape\color{UniBwMorange}},
+      keywordstyle={[3]\color{UniBwMorange}},
+      commentstyle=\itshape\color{gray},
+      stringstyle=\color{Blue},
+    }
+    \lstdefinestyle{ClassicLight}{
+      keywordstyle=\bfseries\color{NavyBlue},
+      keywordstyle={[2]\bfseries\color{Fuchsia}},
+      keywordstyle={[3]\itshape\color{DarkOrchid}},
+      commentstyle=\itshape\color{gray},
+      stringstyle=\color{ForestGreen},
+    }
+    \lstdefinestyle{ClassicDark}{
+      basicstyle=\linespread{1.1}\ttfamily\color{white},
+      backgroundcolor=\color{white!20!black},
+      frame=single,
+      framesep=.3em,
+      framexleftmargin=.5em,
+      framexrightmargin=.5em,
+      keywordstyle=\bfseries\color{ProcessBlue},
+      keywordstyle={[2]\bfseries\color{BurntOrange}},
+      keywordstyle={[3]\itshape\color{DarkOrchid}},
+      commentstyle=\itshape\color{Periwinkle},
+      stringstyle=\color{YellowGreen},
+    }
+    \lstset{
 % Wir gleichen das Aussehen an das von Abbildungen und Tabellen an.
-float=pbt,
-captionpos=b,
-abovecaptionskip=1em,
+      float=pbt,
+      captionpos=b,
+      abovecaptionskip=1em,
 % Formatiere Text fließend und nicht jedes Zeichen einzeln: Dies macht
 % Code zugänglich für Copy&Paste ohne zusätzliche Leerzeichen.
-columns=flexible,
+      columns=flexible,
 % Keine Hervorhebung von Leerzeichen in Strings
-showstringspaces=false,
+      showstringspaces=false,
 % Stelle Code auf die Festbreitenschriftart, damit Zeichen wieder korrekt
 % untereinander dargestellt werden, und nehme Listings vom 1,5-fachen
 % Zeilenabstand aus.
-basicstyle=\linespread{1.1}\ttfamily,
+      basicstyle=\linespread{1.1}\ttfamily,
 % Default-Stil
-style=UniBwM,
+      style=UniBwM,
 % Folgende Auflistung ermöglicht die Nutzung der gelisteten Sonderzeichen
 % in Listings. Die Unterstützung des listings-Pakets für erweiterte
 % Zeichen ist leider noch nicht reibungslos.
-literate=%
-{ä}{{\"a}}1
-{ö}{{\"o}}1
-{ü}{{\"u}}1
-{Ä}{{\"A}}1
-{Ö}{{\"O}}1
-{Ü}{{\"U}}1
-{ß}{{\ss}}2
+      literate=%
+        {ä}{{\"a}}1
+        {ö}{{\"o}}1
+        {ü}{{\"u}}1
+        {Ä}{{\"A}}1
+        {Ö}{{\"O}}1
+        {Ü}{{\"U}}1
+        {ß}{{\ss}}2
 %
-{á}{{\'a}}1
-{à}{{\`a}}1
-{â}{{\^a}}1
-{ǎ}{{\v{a}}}1
-{ã}{{\~a}}1
-{å}{{\r{a}}}1
-{č}{{\v{c}}}1
-{ç}{{\c{c}}}1
-{ď}{{\v{d}}}1
-{é}{{\'e}}1
-{è}{{\`e}}1
-{ê}{{\^e}}1
-{ě}{{\v{e}}}1
-{ë}{{\"e}}1
-{ẽ}{{\~e}}1
-{e̊}{{\r{e}}}1
-{í}{{\'i}}1
-{ì}{{\`i}}1
-{î}{{\^i}}1
-{ǐ}{{\v{i}}}1
-{ı̈}{{\"i}}1
-{ĩ}{{\~i}}1
-{i̊}{{\r{i}}}1
-{ň}{{\v{n}}}1
-{ñ}{{\~n}}1
-{ó}{{\'o}}1
-{ò}{{\`o}}1
-{ô}{{\^{o}}}1
-{ǒ}{{\v{o}}}1
-{õ}{{\~o}}1
-{o̊}{{\r{o}}}1
-{ř}{{\v{r}}}1
-{š}{{\v{s}}}1
-{ť}{{\v{t}}}1
-{ú}{{\'u}}1
-{ù}{{\`u}}1
-{û}{{\^u}}1
-{ǔ}{{\v{u}}}1
-{ũ}{{\~r}}1
-{ů}{{\r{u}}}1
-{ý}{{\'y}}1
-{ž}{{\v{z}}}1
-{Á}{{\'A}}1
-{À}{{\`A}}1
-{Â}{{\^A}}1
-{Ǎ}{{\v{A}}}1
-{Ã}{{\~A}}1
-{Å}{{\r{A}}}1
-{Č}{{\v{C}}}1
-{Ç}{{\c{C}}}1
-{Ď}{{\v{D}}}1
-{É}{{\'E}}1
-{È}{{\`E}}1
-{Ê}{{\^E}}1
-{Ě}{{\v{E}}}1
-{Ë}{{\"E}}1
-{Ẽ}{{\~E}}1
-{E̊}{{\r{E}}}1
-{Í}{{\'I}}1
-{Ì}{{\`I}}1
-{Î}{{\^I}}1
-{Ǐ}{{\v{I}}}1
-{Ï}{{\"I}}1
-{Ĩ}{{\~I}}1
-{I̊}{{\r{I}}}1
-{Ň}{{\v{N}}}1
-{Ñ}{{\~N}}1
-{Ó}{{\'O}}1
-{Ò}{{\`O}}1
-{Ô}{{\^{O}}}1
-{Ǒ}{{\v{O}}}1
-{Õ}{{\~O}}1
-{O̊}{{\r{O}}}1
-{Ř}{{\v{R}}}1
-{Š}{{\v{S}}}1
-{Ť}{{\v{T}}}1
-{Ú}{{\'U}}1
-{Ù}{{\`U}}1
-{Û}{{\^U}}1
-{Ǔ}{{\v{U}}}1
-{Ũ}{{\~R}}1
-{Ů}{{\r{U}}}1
-{Ý}{{\'Y}}1
-{Ž}{{\v{Z}}}1,
-}
+        {á}{{\'a}}1
+        {à}{{\`a}}1
+        {â}{{\^a}}1
+        {ǎ}{{\v{a}}}1
+        {ã}{{\~a}}1
+        {å}{{\r{a}}}1
+        {č}{{\v{c}}}1
+        {ç}{{\c{c}}}1
+        {ď}{{\v{d}}}1
+        {é}{{\'e}}1
+        {è}{{\`e}}1
+        {ê}{{\^e}}1
+        {ě}{{\v{e}}}1
+        {ë}{{\"e}}1
+        {ẽ}{{\~e}}1
+        {e̊}{{\r{e}}}1
+        {í}{{\'i}}1
+        {ì}{{\`i}}1
+        {î}{{\^i}}1
+        {ǐ}{{\v{i}}}1
+        {ı̈}{{\"i}}1
+        {ĩ}{{\~i}}1
+        {i̊}{{\r{i}}}1
+        {ň}{{\v{n}}}1
+        {ñ}{{\~n}}1
+        {ó}{{\'o}}1
+        {ò}{{\`o}}1
+        {ô}{{\^{o}}}1
+        {ǒ}{{\v{o}}}1
+        {õ}{{\~o}}1
+        {o̊}{{\r{o}}}1
+        {ř}{{\v{r}}}1
+        {š}{{\v{s}}}1
+        {ť}{{\v{t}}}1
+        {ú}{{\'u}}1
+        {ù}{{\`u}}1
+        {û}{{\^u}}1
+        {ǔ}{{\v{u}}}1
+        {ũ}{{\~r}}1
+        {ů}{{\r{u}}}1
+        {ý}{{\'y}}1
+        {ž}{{\v{z}}}1
+        {Á}{{\'A}}1
+        {À}{{\`A}}1
+        {Â}{{\^A}}1
+        {Ǎ}{{\v{A}}}1
+        {Ã}{{\~A}}1
+        {Å}{{\r{A}}}1
+        {Č}{{\v{C}}}1
+        {Ç}{{\c{C}}}1
+        {Ď}{{\v{D}}}1
+        {É}{{\'E}}1
+        {È}{{\`E}}1
+        {Ê}{{\^E}}1
+        {Ě}{{\v{E}}}1
+        {Ë}{{\"E}}1
+        {Ẽ}{{\~E}}1
+        {E̊}{{\r{E}}}1
+        {Í}{{\'I}}1
+        {Ì}{{\`I}}1
+        {Î}{{\^I}}1
+        {Ǐ}{{\v{I}}}1
+        {Ï}{{\"I}}1
+        {Ĩ}{{\~I}}1
+        {I̊}{{\r{I}}}1
+        {Ň}{{\v{N}}}1
+        {Ñ}{{\~N}}1
+        {Ó}{{\'O}}1
+        {Ò}{{\`O}}1
+        {Ô}{{\^{O}}}1
+        {Ǒ}{{\v{O}}}1
+        {Õ}{{\~O}}1
+        {O̊}{{\r{O}}}1
+        {Ř}{{\v{R}}}1
+        {Š}{{\v{S}}}1
+        {Ť}{{\v{T}}}1
+        {Ú}{{\'U}}1
+        {Ù}{{\`U}}1
+        {Û}{{\^U}}1
+        {Ǔ}{{\v{U}}}1
+        {Ũ}{{\~R}}1
+        {Ů}{{\r{U}}}1
+        {Ý}{{\'Y}}1
+        {Ž}{{\v{Z}}}1,
+    }
 % listings bringt keine Sprachdefinition für JavaScript mit - heute eine
 % sehr verbreitete Sprache. Wir liefern deshalb eine zusammengefügte
 % Version der Definitionen von Gary Hammock mit.
 % https://github.com/ghammock/LaTeX_Listings_JavaScript_ES6 (MIT-Lizenz)
-\lstdefinelanguage{JavaScript}{
-morekeywords=[1]{await, async, break, case, catch, class, const, continue, default, delete, do, else, enum, export, extends, finally, for, from, function, if, implements, import, in, instanceof, let, new, return, static, super, switch, this, throw, try, typeof, var, void, while, with},
+    \lstdefinelanguage{JavaScript}{
+      morekeywords=[1]{await, async, break, case, catch, class, const, continue, default, delete, do, else, enum, export, extends, finally, for, from, function, if, implements, import, in, instanceof, let, new, return, static, super, switch, this, throw, try, typeof, var, void, while, with},
 % Literals, primitive types, and reference types.
-morekeywords=[2]{false, null, true, boolean, number, undefined, Array, Boolean, Date, Math, Number, String, Object},
+      morekeywords=[2]{false, null, true, boolean, number, undefined, Array, Boolean, Date, Math, Number, String, Object},
 % Built-ins.
-morekeywords=[3]{eval, parseInt, parseFloat, escape, unescape},
-sensitive,
-morecomment=[s]{/*}{*/},
-morecomment=[l]//,
-morecomment=[s]{/**}{*/}, % JavaDoc style comments
-morestring=[b]',
-morestring=[b]",
-morestring=[b]`
-}[keywords, comments, strings]
+      morekeywords=[3]{eval, parseInt, parseFloat, escape, unescape},
+      sensitive,
+      morecomment=[s]{/*}{*/},
+      morecomment=[l]//,
+      morecomment=[s]{/**}{*/}, % JavaDoc style comments
+      morestring=[b]',
+      morestring=[b]",
+      morestring=[b]`
+    }[keywords, comments, strings]
 % Anpassung der Überschrift für das Listing-Verzeichnis (Standard ist
 % einfach nur "Listings")
-\renewcommand{\lstlistlistingname}{\IfLanguageName{ngerman}{Listing-Verzeichnis}{List of Listings}}
-}{} % Ende: Tweaks für das listings-Paket
+    \renewcommand{\lstlistlistingname}{\IfLanguageName{ngerman}{Listing-Verzeichnis}{List of Listings}}
+  }{} % Ende: Tweaks für das listings-Paket
 % Wir stellen ein paar kurze Befehle für typografisch optimierte gängige
 % deutsche Abkürzungen bereit.
-\newcommand{\zB}{z.\,B.}
-\newcommand{\dH}{d.\,h.}
-\newcommand{\ua}{u.\,a.}
-\newcommand{\eV}{e.\,V.}
+  \newcommand{\zB}{z.\,B.}
+  \newcommand{\dH}{d.\,h.}
+  \newcommand{\ua}{u.\,a.}
+  \newcommand{\eV}{e.\,V.}
 } % Ende: AtBeginDocument
 
 % Platz für Dinge, die wir erst am Ende machen können/müssen
 \AtEndDocument{
 % Prüfung der Integritätsbedingung für das Abstract
-\ifthenelse{\equal{\UniBwM@status}{final}}{
-\ifthenelse{\equal{\UniBwM@abstract}{none}}
-{\ifthenelse{\not\equal{\value{@UniBwM@abstractcount}}{0}}{
-\ClassWarning{unibwm-inf-thesis}{Abstract found in document while abstract=none}{The option "abstract" is set to "none", but an abstract was found in the document. Is this intentional?}}{}}
-{
-\ifthenelse{\equal{\value{@UniBwM@abstractcount}}{0}}{
-\ClassError{unibwm-inf-thesis}{No abstract found in document}{This type of document requires an abstract. Set the option "abstract" to "none" to avoid this error message if the omission is deliberate.}}{}
-\ifthenelse{\not\(\equal{\value{@UniBwM@abstractcount}}{0}\or\equal{\value{@UniBwM@abstractcount}}{1}\)}{
-\ClassError{unibwm-inf-thesis}{Multiple abstracts found in document}{This type of document requires exactly one abstract. Having multiple abstracts is a structural error.}}{}
-}
-}{}
+  \ifthenelse{\equal{\UniBwM@status}{final}}{
+    \ifthenelse{\equal{\UniBwM@abstract}{none}}
+    {\ifthenelse{\not\equal{\value{@UniBwM@abstractcount}}{0}}{
+      \ClassWarning{unibwm-inf-thesis}{Abstract found in document while abstract=none}{The option "abstract" is set to "none", but an abstract was found in the document. Is this intentional?}}{}}
+    {
+      \ifthenelse{\equal{\value{@UniBwM@abstractcount}}{0}}{
+        \ClassError{unibwm-inf-thesis}{No abstract found in document}{This type of document requires an abstract. Set the option "abstract" to "none" to avoid this error message if the omission is deliberate.}}{}
+      \ifthenelse{\not\(\equal{\value{@UniBwM@abstractcount}}{0}\or\equal{\value{@UniBwM@abstractcount}}{1}\)}{
+        \ClassError{unibwm-inf-thesis}{Multiple abstracts found in document}{This type of document requires exactly one abstract. Having multiple abstracts is a structural error.}}{}
+    }
+  }{}
 } % Ende: AtEndDocument
 
 
@@ -602,28 +602,28 @@ morestring=[b]`
 % vorgeschrieben ist das allerdings nicht, falls der Nutzer
 % experimentieren möchte.
 \newenvironment{abstract}{%
-\stepcounter{@UniBwM@abstractcount}
-\ifthenelse{\equal{\UniBwM@abstract}{totoc}}{%
-\phantomsection%
-\addcontentsline{toc}{chapter}{\IfLanguageName{ngerman}{Kurzfassung}{Abstract}}}{}
-\vspace*{0mm}
+  \stepcounter{@UniBwM@abstractcount}
+  \ifthenelse{\equal{\UniBwM@abstract}{totoc}}{%
+    \phantomsection%
+    \addcontentsline{toc}{chapter}{\IfLanguageName{ngerman}{Kurzfassung}{Abstract}}}{}
+  \vspace*{0mm}
 
-\begin{center}
-\ifthenelse{\equal{\UniBwM@abstract}{noheader}}{\vspace{-5mm}}{\sffamily\bfseries\Large\IfLanguageName{ngerman}{Kurzfassung}{Abstract}}
-\end{center}
-}{
-\vspace*{1cm}
+  \begin{center}
+    \ifthenelse{\equal{\UniBwM@abstract}{noheader}}{\vspace{-5mm}}{\sffamily\bfseries\Large\IfLanguageName{ngerman}{Kurzfassung}{Abstract}}
+  \end{center}
+  }{
+  \vspace*{1cm}
 }
 
 % Mit diesen zwei Makros erlauben wir es dem Nutzer, Eckdaten zum
 % Dokument zu hinterlegen, auf denen dann der Inhalt von Titelblatt etc.
 % basieren.
 \newcommand{\setvalue}[2]{
-\ifx\@onlypreamble\@notprerr%
-\ClassError{unibwm-inf-thesis}{setvalue called outside of preamble}{All data values need to be set in the preamble, before the start of the document.}
-\else
-\expandafter\newcommand\csname UniBwM@#1\endcsname{#2}
-\fi
+  \ifx\@onlypreamble\@notprerr%
+  \ClassError{unibwm-inf-thesis}{setvalue called outside of preamble}{All data values need to be set in the preamble, before the start of the document.}
+  \else
+  \expandafter\newcommand\csname UniBwM@#1\endcsname{#2}
+  \fi
 }
 % Die folgende Möglichkeit zum nachträglichen Zugriff auf die
 % hinterlegten Daten ist für den Nutzer gedacht, um Doppelungen von
@@ -631,194 +631,189 @@ morestring=[b]`
 % auf die entsprechenden Makros des Schemas \UniBwM@Bezeichner
 % zugegriffen werden.
 \newcommand{\getvalue}[1]{%
-\ifcsname UniBwM@#1\endcsname%
-\csname UniBwM@#1\endcsname%
-\fi%
+  \ifcsname UniBwM@#1\endcsname%
+  \csname UniBwM@#1\endcsname%
+  \fi%
 }
 
 \newcommand{\@UniBwM@titlepageauthor}[1]{%
-\begin{minipage}{.45\linewidth}%
-\centering%
-\vspace{8mm}%
-\ifcsname UniBwM@author1#1\endcsname%
-\csname UniBwM@author1#1\endcsname%
+  \begin{minipage}{.45\linewidth}%
+    \centering%
+    \vspace{8mm}%
+    \ifcsname UniBwM@author#1\endcsname%
+    \csname UniBwM@author#1\endcsname%
+    \else%
+    \ifthenelse{\equal{\UniBwM@status}{final}}
+    {\ClassError{unibwm-inf-thesis}{Missing mandatody field: author}{The field "author" must be defined to compile a final version.}}
+    {\textcolor{red}{Warning: Author not defined!}}%
+    \fi\\
 
-\ifcsname UniBwM@matrnr1#1\endcsname%
-\csname UniBwM@matrnr1#1\endcsname%
-\else%
-\ifthenelse{\equal{\UniBwM@status}{final}}
-{\ClassError{unibwm-inf-thesis}{Missing mandatody field: author}{The field "author" must be defined to compile a final version.}}
-{\textcolor{red}{Warning: Author not defined!}}%
-\fi\\
-\ifcsname UniBwM@author2#1\endcsname%
-\csname UniBwM@author2#1\endcsname%
-
-\ifcsname UniBwM@matrnr2#1\endcsname%
-\csname UniBwM@matrnr2#1\endcsname%
-\else%
-\ifthenelse{\equal{\UniBwM@status}{final}\and\(\equal{\UniBwM@type}{bachelorthesis}\or\equal{\UniBwM@type}{mastersthesis}\)}
-{\ClassError{unibwm-inf-thesis}{Missing mandatory field matrnr}{For a final version of bachelorthesis or mastersthesis, a matriculation number is mandatory.}}{}
-\fi%
-\end{minipage}%
+    \ifcsname UniBwM@matrnr#1\endcsname%
+    \csname UniBwM@matrnr#1\endcsname%
+    \else%
+    \ifthenelse{\equal{\UniBwM@status}{final}\and\(\equal{\UniBwM@type}{bachelorthesis}\or\equal{\UniBwM@type}{mastersthesis}\)}
+    {\ClassError{unibwm-inf-thesis}{Missing mandatory field matrnr}{For a final version of bachelorthesis or mastersthesis, a matriculation number is mandatory.}}{}
+    \fi%
+  \end{minipage}%
 }
 
 \newcommand{\@UniBwM@requireddate}[1]{%
-\ifcsname UniBwM@#1\endcsname%
-\csname UniBwM@#1\endcsname%
-\else%
-\ClassError{unibwm-inf-thesis}{Mandatory date missing: #1}{For the titlepage for document type \UniBwM@type{}, the following date is required: #1}%
-\textbf{??.??.????}%
-\fi%
+  \ifcsname UniBwM@#1\endcsname%
+  \csname UniBwM@#1\endcsname%
+  \else%
+  \ClassError{unibwm-inf-thesis}{Mandatory date missing: #1}{For the titlepage for document type \UniBwM@type{}, the following date is required: #1}%
+  \textbf{??.??.????}%
+  \fi%
 }
 
 \def\maketitle{
-\begin{center}
+  \begin{center}
 
-\ifthenelse{\not\equal{\UniBwM@replacelogo}{}}{%
-\ifthenelse{\equal{\UniBwM@replacelogo}{undefined}}
-{\UniBwMlogo}
-{\UniBwM@replacelogo}
-\vspace*{1.5cm}
-}{\vspace*{1cm}}
+    \ifthenelse{\not\equal{\UniBwM@replacelogo}{}}{%
+      \ifthenelse{\equal{\UniBwM@replacelogo}{undefined}}
+      {\UniBwMlogo}
+      {\UniBwM@replacelogo}
+      \vspace*{1.5cm}
+    }{\vspace*{1cm}}
 
-\linespread{1.0}
-{\Huge%
-\textbf{\sffamily%
-\ifcsname UniBwM@title\endcsname%
-\UniBwM@title%
-\else%
-\ifthenelse{\equal{\UniBwM@status}{final}}
-{\ClassError{unibwm-inf-thesis}{Missing mandatody field: title}{The field "title" must be defined to compile a final version.}}
-{\textcolor{red}{Warning: Title not defined!}}
-\fi}\\%
-}
-\linespread{1.3}
+    \linespread{1.0}
+    {\Huge%
+    \textbf{\sffamily%
+    \ifcsname UniBwM@title\endcsname%
+    \UniBwM@title%
+    \else%
+    \ifthenelse{\equal{\UniBwM@status}{final}}
+    {\ClassError{unibwm-inf-thesis}{Missing mandatody field: title}{The field "title" must be defined to compile a final version.}}
+    {\textcolor{red}{Warning: Title not defined!}}
+    \fi}\\%
+    }
+    \linespread{1.3}
 
-\ifthenelse{\equal{\UniBwM@status}{draft}}{
-\vspace{5mm}
+    \ifthenelse{\equal{\UniBwM@status}{draft}}{
+      \vspace{5mm}
 
-{\Large{}-- \IfLanguageName{ngerman}{Zwischenstand vom}{Draft from}
-\ifcsname UniBwM@versiondate\endcsname%
-\UniBwM@versiondate%
-\else%
-\today%
-\fi
-\ --\\}
-}{}
+      {\Large{}-- \IfLanguageName{ngerman}{Zwischenstand vom}{Draft from}
+      \ifcsname UniBwM@versiondate\endcsname%
+      \UniBwM@versiondate%
+      \else%
+      \today%
+      \fi
+      \ --\\}
+    }{}
 
-\ifthenelse{\equal{\UniBwM@type}{phdthesis}}{}{%
-\vfill
+    \ifthenelse{\equal{\UniBwM@type}{phdthesis}}{}{%
+      \vfill
 
-{\Large\@UniBwM@typename}}{}
+      {\Large\@UniBwM@typename}}{}
 
-\vspace{5mm}
+    \vspace{5mm}
 
-{\Large\@UniBwM@titlepageauthor{}%
-\ifcsname UniBwM@authorB\endcsname%
-\hfill\@UniBwM@titlepageauthor{B}%
-\fi
-\ifcsname UniBwM@authorC\endcsname%
-\@UniBwM@titlepageauthor{C}%
-\ifcsname UniBwM@authorD\endcsname%
-\hfill\@UniBwM@titlepageauthor{D}%
-\fi
-\fi
-\ifcsname UniBwM@authorE\endcsname%
-\@UniBwM@titlepageauthor{E}%
-\ifcsname UniBwM@authorF\endcsname%
-\hfill\@UniBwM@titlepageauthor{F}%
-\fi%
-\fi%
-}%
+    {\Large\@UniBwM@titlepageauthor{}%
+    \ifcsname UniBwM@authorB\endcsname%
+    \hfill\@UniBwM@titlepageauthor{B}%
+    \fi
+    \ifcsname UniBwM@authorC\endcsname%
+    \@UniBwM@titlepageauthor{C}%
+    \ifcsname UniBwM@authorD\endcsname%
+    \hfill\@UniBwM@titlepageauthor{D}%
+    \fi
+    \fi
+    \ifcsname UniBwM@authorE\endcsname%
+    \@UniBwM@titlepageauthor{E}%
+    \ifcsname UniBwM@authorF\endcsname%
+    \hfill\@UniBwM@titlepageauthor{F}%
+    \fi%
+    \fi%
+    }%
 
-\vfill
+    \vfill
 
-\ifthenelse{\equal{\UniBwM@type}{seminarpaper}}{%
-\ifcsname UniBwM@seminartitle\endcsname%
-\IfLanguageName{ngerman}{Entstanden im Rahmen von}{Created as part of}:
+    \ifthenelse{\equal{\UniBwM@type}{seminarpaper}}{%
+      \ifcsname UniBwM@seminartitle\endcsname%
+      \IfLanguageName{ngerman}{Entstanden im Rahmen von}{Created as part of}:
 
-\textit{\UniBwM@seminartitle}
+      \textit{\UniBwM@seminartitle}
 
-\ifcsname UniBwM@seminarcontext\endcsname%
-\UniBwM@seminarcontext%
-\fi
-\fi
-}{}
+      \ifcsname UniBwM@seminarcontext\endcsname%
+      \UniBwM@seminarcontext%
+      \fi
+      \fi
+    }{}
 
-\ifthenelse{\equal{\UniBwM@type}{phdthesis}}{%
-\end{center}
+    \ifthenelse{\equal{\UniBwM@type}{phdthesis}}{%
+  \end{center}
 
-\noindent\large Vollständiger Abdruck der von der Fakultät für Informatik der Universität der Bundeswehr München zur Erlangung des akademischen Grades eines
+  \noindent\large Vollständiger Abdruck der von der Fakultät für Informatik der Universität der Bundeswehr München zur Erlangung des akademischen Grades eines
 
-\begin{center}
-\ifcsname UniBwM@degreetitle\endcsname
-\csname UniBwM@degreetitle\endcsname
-\else
-Doktors der Naturwissenschaften (Dr. rer. nat.)
-\fi
-\end{center}
+  \begin{center}
+    \ifcsname UniBwM@degreetitle\endcsname
+    \csname UniBwM@degreetitle\endcsname
+    \else
+    Doktors der Naturwissenschaften (Dr. rer. nat.)
+    \fi
+  \end{center}
 
-\noindent genehmigten Dissertation.
+  \noindent genehmigten Dissertation.
 
-\begin{center}
+  \begin{center}
 }{}
 
 \vfill
 
 \begin{large}
-\begin{tabular}{ll}
-\ifcsname UniBwM@examiner\endcsname
+  \begin{tabular}{ll}
+    \ifcsname UniBwM@examiner\endcsname
 
-\ifcsname UniBwM@examinerlabel\endcsname%
-\UniBwM@examinerlabel%
-\else%
-\ifcsname UniBwM@examinerB\endcsname%
-\IfLanguageName{ngerman}{\ifthenelse{\equal{\UniBwM@type}{phdthesis}}{Erstgutachter}{Erstprüfer}}{Primary examiner}%
-\else%
-\IfLanguageName{ngerman}{\ifthenelse{\equal{\UniBwM@type}{phdthesis}}{Gutachter}{Prüfer}}{Examiner}%
-\fi%
-\fi%
-: & \UniBwM@examiner \\
-\ifcsname UniBwM@examinerB\endcsname
-\ifcsname UniBwM@examinerBlabel\endcsname%
-\UniBwM@examinerBlabel%
-\else%
-\IfLanguageName{ngerman}{\ifthenelse{\equal{\UniBwM@type}{phdthesis}}{Zweitgutachter}{Zweitprüfer}}{Secondary examiner}%
-\fi%
-: & \UniBwM@examinerB \\
-\ifcsname UniBwM@examinerC\endcsname
-\ifcsname UniBwM@examinerClabel\endcsname%
-\UniBwM@examinerClabel%
-\else%
-\IfLanguageName{ngerman}{\ifthenelse{\equal{\UniBwM@type}{phdthesis}}{Drittgutachter}{Drittprüfer}}{Tertiary examiner}%
-\fi%
-: & \UniBwM@examinerC \\
-\fi
-\fi
-\fi
-\ifcsname UniBwM@advisor\endcsname
-\ifcsname UniBwM@advisorlabel\endcsname%
-\UniBwM@advisorlabel%
-\else%
-\IfLanguageName{ngerman}{Betreuer}{Advisor\ifcsname UniBwM@advisorB\endcsname{}s\fi}%
-\fi%
-: & \UniBwM@advisor \\
-\ifcsname UniBwM@advisorB\endcsname
-& \UniBwM@advisorB \\
-\ifcsname UniBwM@advisorC\endcsname
-& \UniBwM@advisorC \\
-\fi
-\fi
-\fi
+    \ifcsname UniBwM@examinerlabel\endcsname%
+    \UniBwM@examinerlabel%
+    \else%
+    \ifcsname UniBwM@examinerB\endcsname%
+    \IfLanguageName{ngerman}{\ifthenelse{\equal{\UniBwM@type}{phdthesis}}{Erstgutachter}{Erstprüfer}}{Primary examiner}%
+    \else%
+    \IfLanguageName{ngerman}{\ifthenelse{\equal{\UniBwM@type}{phdthesis}}{Gutachter}{Prüfer}}{Examiner}%
+    \fi%
+    \fi%
+    : & \UniBwM@examiner \\
+    \ifcsname UniBwM@examinerB\endcsname
+    \ifcsname UniBwM@examinerBlabel\endcsname%
+    \UniBwM@examinerBlabel%
+    \else%
+    \IfLanguageName{ngerman}{\ifthenelse{\equal{\UniBwM@type}{phdthesis}}{Zweitgutachter}{Zweitprüfer}}{Secondary examiner}%
+    \fi%
+    : & \UniBwM@examinerB \\
+    \ifcsname UniBwM@examinerC\endcsname
+    \ifcsname UniBwM@examinerClabel\endcsname%
+    \UniBwM@examinerClabel%
+    \else%
+    \IfLanguageName{ngerman}{\ifthenelse{\equal{\UniBwM@type}{phdthesis}}{Drittgutachter}{Drittprüfer}}{Tertiary examiner}%
+    \fi%
+    : & \UniBwM@examinerC \\
+    \fi
+    \fi
+    \fi
+    \ifcsname UniBwM@advisor\endcsname
+    \ifcsname UniBwM@advisorlabel\endcsname%
+    \UniBwM@advisorlabel%
+    \else%
+    \IfLanguageName{ngerman}{Betreuer}{Advisor\ifcsname UniBwM@advisorB\endcsname{}s\fi}%
+    \fi%
+    : & \UniBwM@advisor \\
+    \ifcsname UniBwM@advisorB\endcsname
+    & \UniBwM@advisorB \\
+    \ifcsname UniBwM@advisorC\endcsname
+    & \UniBwM@advisorC \\
+    \fi
+    \fi
+    \fi
 % The following has to be wrapped in a macro to avoid causing issues from
 % using an ampersand within an ifedfine, root cause not entirely clear.
-\newcommand{\@UniBwm@printdeadline}{%
-\IfLanguageName{ngerman}{Abgabetermin}{Deadline}: & \UniBwM@deadline \\}%
-\ifthenelse{\not\equal{\UniBwM@type}{phdthesis}}{%
-\ifdefined\UniBwM@deadline%
-\@UniBwm@printdeadline%
-\fi}{}
-\end{tabular}
+    \newcommand{\@UniBwm@printdeadline}{%
+      \IfLanguageName{ngerman}{Abgabetermin}{Deadline}: & \UniBwM@deadline \\}%
+    \ifthenelse{\not\equal{\UniBwM@type}{phdthesis}}{%
+      \ifdefined\UniBwM@deadline%
+      \@UniBwm@printdeadline%
+      \fi}{}
+  \end{tabular}
 \end{large}
 
 \vfill

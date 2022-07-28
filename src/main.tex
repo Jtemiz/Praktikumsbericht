@@ -12,11 +12,9 @@
 \bibliographystyle{apalike-german}
 
 \newcommand{\todo}[1]{\textbf{TODO: #1}}
-\setvalue{title}{Konzeptentwicklung zur Umsetzung von Body-Tracking bei Kindern}
-\setvalue{author2}{Joel Temiz}
-\setvalue{matrnr2}{1196670}
-\setvalue{author1}{Dustin Hoffmann}
-\setvalue{matrnr1}{1196346}
+\setvalue{title}{Qualitätssicherung im Schaltanlagenbau: Konzeption und Implementierung DPP}
+\setvalue{author}{Joel Temiz}
+\setvalue{matrnr}{1196670}
 
 \setvalue{examiner}{Prof. Dr. Ulrike Lechner}
 \setvalue{advisor}{Lisa Verlande}
@@ -40,9 +38,53 @@
 
 
     \chapter{Gesamtkonzept von DPP und Einordnung in Fertigungsprozess}
+    Zur Umsetzung eines betrieblichen Anwendungssystems muss im ersten Schritt eine Konzeption erfolgen, die darstellt,
+    wie die Anwendung gestaltet sein kann, um das gewünschte Ziel zu erfüllen.
+    \section{Anforderungen}
+    In Rücksprache mit dem Praxispartner, wurden einerseits die Ziele des Systems \textit{DPP} herausgearbeitet.
+    Andererseits wurden einzelne Anforderungen konkretisiert, die dazu dienen sollen das Ziel zu erfüllen.
+    Das Hauptziel des Anwendungssystems \textit{DPP} ist die Minimierung von fehlerhaften Schaltanlagen.
+    Als Anforderung wurden hierbei eine maximale Fehlerquote von 3\% genannt.
+
+    Um dieser Anforderung gerecht werden zu können, stellt sich der Praxispartner verschiedene Leistungen vor.
+    Diese sind einerseits dem Prüfprozess zuordenbar, andererseits soll bereits die Entstehung von Fehlern vermieden
+    werden, indem die Monteure während der Produktion unterstützt werden.
+
+    \subsection{Digitale Maschinenakte}
+    \begin{itemize}
+        \item Einführung einer Maschinenakte
+        \item Erstellung einer Maschinenakte für jeden Schaltschrank bei Auftragseingang
+        \item Identifizierbarkeit des Schaltschranks
+        \item Maschinenakte enthält alle relevanten Informationen über Produktion und Wartung der Maschine.
+        \item Bsp: CAD-Zeichnung, EPlan, Simulation der zugehörigen Maschine, \ldots
+    \item \end{itemize}
+    \subsection{Technische Prüfung}
+    Die erste Leistung ist die technische Prüfung der Schaltschränke durch Simulation.
+    Hierbei soll die Maschine, für die die Schaltanlage gebaut wird, durch ein System simuliert werden.
+    %TODO Simulation erklären
+    
+    \subsection{Visuelle Prüfung}
+    \begin{itemize}
+        \item Hauptfokus der Arbeit
+        \item Mehrere Aufgaben:
+        \item Verfügbarkeit der Bauteile
+        \item Richtige Position der Bauteile
+        \item Optische Beschädigungen
+    \end{itemize}
 
 
-    \chapter{Implementierung CV-Modul}
+    \subsection{Fehlerfreies Arbeiten}
+    \begin{itemize}
+        \item Umsetzung derzeit noch nicht geplant
+        \item Idee:
+        \item Unterstützung der Monteure in der Produktion
+        \item z.B. durch AR -> Brillen zeigen die Position des einzubauenden Bauteils.
+        \item Cobotik --> Drehmoment-Schlüssel stellt automatisch drehmoment ein, zieht schrauben nach.
+    \end{itemize}
+
+
+
+    \chapter{Implementierung \textit{Visuelle Prüfung}}
     Teilmodul von AS DPP: DPP Visual\\
     Ziel von DPP Visual: Sind alle notwendigen Bauteile vorhanden?
     Sind die Bauteile an der richtigen Stelle verbaut?\\
@@ -82,7 +124,8 @@
 
 
     \bibliography{main}
-
+    \backmatter
+    \input{wochenbericht.tex}
     \input{erklaerung-unibw}
 
 \end{document}
