@@ -1,3 +1,3 @@
 # Praktikumsbericht
-<embed src="./out/main.pdf" type="application/pdf">
+<embed src="out/main.pdf" type="application/pdf">
 
