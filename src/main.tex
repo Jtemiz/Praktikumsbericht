@@ -24,7 +24,7 @@
 \setvalue{deadline}{30.06.2022}
 \usepackage{amsmath}
 \usepackage{nameref}
-
+\usepackage[printonlyused]{acronym}
 \begin{document}
     \tableofcontents
 
@@ -40,9 +40,13 @@
     \chapter{Gesamtkonzept von DPP und Einordnung in Fertigungsprozess}
     Zur Umsetzung eines betrieblichen Anwendungssystems muss im ersten Schritt eine Konzeption erfolgen, die darstellt,
     wie die Anwendung gestaltet sein kann, um das gewünschte Ziel zu erfüllen.
+    Die Anfertigung der Konzeption erfolgte stets in enger Zusammenarbeit mit dem Product Owner, bzw dem Praxispartner.
+    Hierfür wurden wöchentlich im Meeting die Fortschritte am Projekt dargestellt, sowie die geplanten Vorhaben der kommenden Woche vorgestellt.
+
     \section{Anforderungen}
     In Rücksprache mit dem Praxispartner, wurden einerseits die Ziele des Systems \textit{DPP} herausgearbeitet.
-    Andererseits wurden einzelne Anforderungen konkretisiert, die dazu dienen sollen das Ziel zu erfüllen.
+
+    Andererseits wurden einzelne Anforderungen konkretisiert, die dazu dienen sollen, das Ziel zu erfüllen.
     Das Hauptziel des Anwendungssystems \textit{DPP} ist die Minimierung von fehlerhaften Schaltanlagen.
     Als Anforderung wurden hierbei eine maximale Fehlerquote von 3\% genannt.
 
@@ -51,16 +55,43 @@
     werden, indem die Monteure während der Produktion unterstützt werden.
 
     \subsection{Digitale Maschinenakte}
+    Zur Verwirklichung des Systems ist es notwendig, die physische Entität des Schaltschranks um eine zusätzliche,
+    virtuelle Dimension zu erweitern.
+    Diese virtuelle Komponente lässt sich als eine digitale Maschinenakte beschreiben und begleitet das Produkt vom
+    Auftragseingang über die Produktion
+    bis hin zur Qualitätssicherung.
+    Weiter wäre es denkbar, diese auch nach der Auslieferung noch besteht, um Wartungs- und Reparaturvorgänge
+    dokumentieren zu können.
+    Sie soll dem jeweiligen Schaltschrank über seine Seriennummer eindeutig zuordenbar sein, sodass sie dauerhaft
+    aktualisiert werden kann und auch Informationen aus ihr hervorgehen können.
+    Beispielsweise soll sie es im Zuge des kontinuierlichen Verbesserungsprozesses ermöglichen, bei einem in der
+    Qualitätssicherung erkannten Mangel auf einen vorhergehenden Montageschritt verweisen zu können.
+    Einträge der digitalen Maschinenakte, die im Laufe der Produktion und Qualitätssicherung notwendig sind, sind unter
+    anderem:
     \begin{itemize}
-        \item Einführung einer Maschinenakte
-        \item Erstellung einer Maschinenakte für jeden Schaltschrank bei Auftragseingang
-        \item Identifizierbarkeit des Schaltschranks
-        \item Maschinenakte enthält alle relevanten Informationen über Produktion und Wartung der Maschine.
-        \item Bsp: CAD-Zeichnung, EPlan, Simulation der zugehörigen Maschine, \ldots
-    \item \end{itemize}
-    \subsection{Technische Prüfung}
-    Die erste Leistung ist die technische Prüfung der Schaltschränke durch Simulation.
+        \item CAD-Modell des Schaltschranks
+        \item Montagepläne
+        \item Schaltpläne
+        \item Stücklisten
+        \item Simulation der zugehörigen Maschine
+    \end{itemize}
+
+
+
+    \subsection{Kontinierliche technische Prüfung}
+    Die erste Leistung ist die \ac{ktP} der Schaltschränke durch Simulation.
+    Ziel der \ac{ktP} ist die Auflösung der isolierten Produktion von Schaltschrank und Mechanik.
     Hierbei soll die Maschine, für die die Schaltanlage gebaut wird, durch ein System simuliert werden.
+    Der zu produzierende Schaltschrank wird hierzu während der Produktion mit einem Simulationssystem verbunden, dass die Logik der zugehörigen Maschine dauerhaft simuliert.
+    Liegt ein technischer Fehler im Schaltschrank vor, würde dieser Fehler direkt im Zuge der Produktion auffallen, bereits vor der Auslieferung auf den Defekt reagiert werden kann.
+    Weiter soll das System den derzeitigen Arbeitsfortschritt kennen, um ausschließlich die bisher funktionierenden Baugruppen zu prüfen und folglich realistische Fehlereinschätzungen zu liefern.
+
+
+    Ein reduzierter Prototyp für Software und Hardware der \ac{ktP} existiert bereits.
+    Diese ist bislang jedoch lediglich für eine Version eines Produkts ausgelegt und agiert ohne Kommunikation zu anderen Systemen.
+    Die Herausforderung hierbei liegt darin, die \ac{ktP} automatisiert und generisch für jeden Schaltschrank zu ermöglichen.
+    Dazu muss die, in der Maschinenakte hinterlegte Simulation durch das System selbstständig aktualisiert werden.
+
     %TODO Simulation erklären
     
     \subsection{Visuelle Prüfung}
@@ -82,6 +113,13 @@
         \item Cobotik --> Drehmoment-Schlüssel stellt automatisch drehmoment ein, zieht schrauben nach.
     \end{itemize}
 
+    \section{Architektur von DPP}
+    \begin{itemize}
+        \item Aufbau als eigenständige Services
+        \item Services benötigen lediglich digitale Maschinenakte
+        \item Kommunizieren mit DigMA --> Erhalten Soll-Zustand, Senden Ist-Zustand
+        \item
+    \end{itemize}
 
 
     \chapter{Implementierung \textit{Visuelle Prüfung}}
@@ -126,6 +164,7 @@
     \bibliography{main}
     \backmatter
     \input{wochenbericht.tex}
+    \input{acronym.tex}
     \input{erklaerung-unibw}
 
 \end{document}
