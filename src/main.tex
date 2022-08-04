@@ -91,16 +91,23 @@
     Diese ist bislang jedoch lediglich für eine Version eines Produkts ausgelegt und agiert ohne Kommunikation zu anderen Systemen.
     Die Herausforderung hierbei liegt darin, die \ac{ktP} automatisiert und generisch für jeden Schaltschrank zu ermöglichen.
     Dazu muss die, in der Maschinenakte hinterlegte Simulation durch das System selbstständig aktualisiert werden.
+    Da für diese die Logik der Schaltpläne notwendig ist, werden Schnittstellen zu dem Schaltplan-CAD-System benötigt.
+    Eine Rücksprache mit dem Unternehmen EPLAN hat zu Beginn des Projektes stattgefunden.
+    Dieses sicherte zu, zum Zwecke der Umsetzung der Schnittstellen bestmöglich zu unterstützen.
 
     %TODO Simulation erklären
     
     \subsection{Visuelle Prüfung}
+    Die visuelle Prüfung soll durch kameragestützte Sensorik erfolgen.
+    In der Qualitätssicherung soll dabei lediglich ein oder mehrere Fotos des jeweiligen Schaltschranks gemacht werden, die in das System geladen werden.
+    Das System soll das Bild / die Bilder darauffolgend verarbeiten und auf mehrere Gesichtspunkte prüfen.
+    Gesichtspunkte die vom Product Owner aufgezählt wurden sind
     \begin{itemize}
-        \item Hauptfokus der Arbeit
-        \item Mehrere Aufgaben:
-        \item Verfügbarkeit der Bauteile
-        \item Richtige Position der Bauteile
-        \item Optische Beschädigungen
+        \item Verfügbarkeit der Bauteile: Die Bauteile / Baugruppen, die auf der Stückliste des Schaltplans oder
+         CAD-Modells aufgezählt sind, müssen im Schaltschrank verbaut sein
+        \item Richtige Position der Bauteile: Die Einbauposition der jeweiligen Bauteile / Baugruppen müssen stets an
+        der dafür vorgesehenen Position im Schaltschrank verbaut sein
+        \item Optische Beschädigungen: Optische Beschädigungen am Äußeren des Schaltschranks dürfen nicht vorhanden sein
     \end{itemize}
 
 
@@ -112,6 +119,18 @@
         \item z.B. durch AR -> Brillen zeigen die Position des einzubauenden Bauteils.
         \item Cobotik --> Drehmoment-Schlüssel stellt automatisch drehmoment ein, zieht schrauben nach.
     \end{itemize}
+    Die Funktion \textit{Fehlerfreies Arbeiten} ist in dem Kontext nicht direkt der Qualitätssicherung zuzuweisen.
+    Ihr Ziel ist es, den laufenden Produktionsprozess dahingehend zu unterstützen, dass Fehler in der Montage von
+    Beginn an vermieden werden.
+    Dies soll erreicht werden, indem im Produktionsprozess Technologien eingesetzt werden, die den Monteur schrittweise
+    durch die Produktion begleiten und ihm Anweisungen zur Montage der Bauteile / Baugruppen geben.
+    Vom Product Owner wurde hier beispielsweise der Einsatz von AR-Brillen genannt, die dem Monteur bei seiner Arbeit
+    die vorgesehene Position eines Bauteils einblendet, bzw. das Bauteil an der vorgesehenen Position visuell simuliert.
+    Als weitere Technologie wurde Cobotik genannt.
+    Ein Anwendungsbeispiel hierfür könnte das automatische Ablängen der Kabelkanäle oder Hutschienen sein.
+    Außerdem ist eine häufige Fehlerquelle der falsche Anzugsdrehmoment von Schrauben im Schaltschrank.
+    Dem kann durch elektronische Drehmomentschlüssel mit voreingestelltem Drehmoment vorgesorgt werden.
+
 
     \section{Architektur von DPP}
     \begin{itemize}
