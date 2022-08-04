@@ -17,11 +17,11 @@
 \setvalue{matrnr}{1196670}
 
 \setvalue{examiner}{Prof. Dr. Ulrike Lechner}
-\setvalue{advisor}{Lisa Verlande}
+\setvalue{advisor}{Hpmt Lisa Verlande}
 \setvalue{advisorlabel}{Betreuerin}
 \setvalue{seminartitle}{Praxisprojekt}
 \setvalue{seminarcontext}{Sommertrimester 2022}
-\setvalue{deadline}{30.06.2022}
+\setvalue{deadline}{30.09.2022}
 \usepackage{amsmath}
 \usepackage{nameref}
 \usepackage[printonlyused]{acronym}
@@ -54,7 +54,7 @@
     Diese sind einerseits dem Prüfprozess zuordenbar, andererseits soll bereits die Entstehung von Fehlern vermieden
     werden, indem die Monteure während der Produktion unterstützt werden.
 
-    \subsection{Digitale Maschinenakte}
+    \subsection{Digitale Maschinenakte}\label{subsec:digitale-maschinenakte}
     Zur Verwirklichung des Systems ist es notwendig, die physische Entität des Schaltschranks um eine zusätzliche,
     virtuelle Dimension zu erweitern.
     Diese virtuelle Komponente lässt sich als eine digitale Maschinenakte beschreiben und begleitet das Produkt vom
@@ -78,7 +78,7 @@
 
 
 
-    \subsection{Kontinierliche technische Prüfung}
+    \subsection{Kontinierliche technische Prüfung}\label{subsec:kontinierliche-technische-prufung}
     Die erste Leistung ist die \ac{ktP} der Schaltschränke durch Simulation.
     Ziel der \ac{ktP} ist die Auflösung der isolierten Produktion von Schaltschrank und Mechanik.
     Hierbei soll die Maschine, für die die Schaltanlage gebaut wird, durch ein System simuliert werden.
@@ -97,7 +97,7 @@
 
     %TODO Simulation erklären
     
-    \subsection{Visuelle Prüfung}
+    \subsection{Visuelle Prüfung}\label{subsec:visuelle-prufung}
     Die visuelle Prüfung soll durch kameragestützte Sensorik erfolgen.
     In der Qualitätssicherung soll dabei lediglich ein oder mehrere Fotos des jeweiligen Schaltschranks gemacht werden, die in das System geladen werden.
     Das System soll das Bild / die Bilder darauffolgend verarbeiten und auf mehrere Gesichtspunkte prüfen.
@@ -111,14 +111,7 @@
     \end{itemize}
 
 
-    \subsection{Fehlerfreies Arbeiten}
-    \begin{itemize}
-        \item Umsetzung derzeit noch nicht geplant
-        \item Idee:
-        \item Unterstützung der Monteure in der Produktion
-        \item z.B. durch AR -> Brillen zeigen die Position des einzubauenden Bauteils.
-        \item Cobotik --> Drehmoment-Schlüssel stellt automatisch drehmoment ein, zieht schrauben nach.
-    \end{itemize}
+    \subsection{Fehlerfreies Arbeiten}\label{subsec:fehlerfreies-arbeiten}
     Die Funktion \textit{Fehlerfreies Arbeiten} ist in dem Kontext nicht direkt der Qualitätssicherung zuzuweisen.
     Ihr Ziel ist es, den laufenden Produktionsprozess dahingehend zu unterstützen, dass Fehler in der Montage von
     Beginn an vermieden werden.
@@ -128,17 +121,19 @@
     die vorgesehene Position eines Bauteils einblendet, bzw. das Bauteil an der vorgesehenen Position visuell simuliert.
     Als weitere Technologie wurde Cobotik genannt.
     Ein Anwendungsbeispiel hierfür könnte das automatische Ablängen der Kabelkanäle oder Hutschienen sein.
-    Außerdem ist eine häufige Fehlerquelle der falsche Anzugsdrehmoment von Schrauben im Schaltschrank.
+    Außerdem ist eine häufige Fehlerquelle das falsche Anzugsdrehmoment von Schrauben im Schaltschrank.
     Dem kann durch elektronische Drehmomentschlüssel mit voreingestelltem Drehmoment vorgesorgt werden.
 
 
     \section{Architektur von DPP}
-    \begin{itemize}
-        \item Aufbau als eigenständige Services
-        \item Services benötigen lediglich digitale Maschinenakte
-        \item Kommunizieren mit DigMA --> Erhalten Soll-Zustand, Senden Ist-Zustand
-        \item
-    \end{itemize}
+    Nach Betrachtung der Anforderungen ist erkennbar, dass die drei Funktionen \textit{Kontinuierliche Technische
+    Prüfung}, \textit{Visuelle Prüfung} und \textit{Fehlerfreies Arbeiten} prinzipiell unabhängig voneinander interagieren.
+    Allesamt benötigen sie lediglich die Daten der digitalen Maschinenakte.
+    Da keine paarweise Assoziation zwischen den Funktionen notwendig ist, würde es sich anbieten, sie als autarke Services
+    bereitzustellen.
+    Diese müssten dann lediglich zum Erhalt der Daten mit der digitalen Maschinenakte und zur Integration in den
+    Fertigungsprozess mit dem Client gekoppelt werden.
+    \todo{Fertigstellen Sect ArchDPP}
 
 
     \chapter{Implementierung \textit{Visuelle Prüfung}}
@@ -173,10 +168,36 @@
     (Tablet, Smartphone) ermöglicht und somit die simultane Überprüfung der Anwendungsergebnisse vereinfacht.
 
 
-    \section{Konzeption DPP Visual}
+    \section{Konzeption Visuelle Prüfung}
+    \begin{itemize}
+        \item Aufbau des Services \textit{Visuelle Prüfung}
+    \end{itemize}
 
 
-    \chapter{Testumgebung CV-Modul}
+    \section{Umsetzung}
+    \begin{itemize}
+        \item Kerninhalte des Codes
+        \item Wie bin ich auf die Inhalte gekommen?
+        \item Abfolge der Algorithmen
+    \end{itemize}
+
+
+
+    \chapter{Evaluation}
+    \section{Testumgebung}
+    \section{Testablauf}
+    \section{Testergebnis}
+
+   \chapter{Fazit}
+
+    \begin{itemize}
+        \item Einordnung des Projekts in Themenbereich WINF
+        \item Kritisches Betrachten des Ergebnisses
+        \item Kritisches Betrachten des Vorgehens
+        \item Weiterer Ausblick
+        \item Bewertung des Praxispartners
+    \end{itemize}
+
 
 
 
