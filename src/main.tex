@@ -10,7 +10,7 @@
 \usepackage{verbatim}
 \usepackage{listings}
 \bibliographystyle{apalike-german}
-
+\usepackage{url}
 \newcommand{\todo}[1]{\textbf{TODO: #1}}
 \setvalue{title}{Qualitätssicherung im Schaltanlagenbau: Konzeption und Implementierung DPP}
 \setvalue{author}{Joel Temiz}
@@ -137,18 +137,164 @@
 
 
     \chapter{Implementierung \textit{Visuelle Prüfung}}
-    Teilmodul von AS DPP: DPP Visual\\
-    Ziel von DPP Visual: Sind alle notwendigen Bauteile vorhanden?
-    Sind die Bauteile an der richtigen Stelle verbaut?\\
-    Ansatz zur technischen Umsetzung: Anlernen durch Fotos der Bauteile.
-    Abgleich der Bilder des Schaltschranks mit Bildern der Bauteile --> Generierung von Keys mit Beschreibung, die
-    Übereinstimmung beschreiben.\\
-    Problem: Übereinstimmungen teilweise fehlerhaft \\
-    Lösung: Clustering der Positionen der Matches mittels KMeans-Algorithmus.
-    Vergleich der Ähnlichkeit der Farbhistogramme von Template und Cluster
+    Die Umsetzung des Moduls \textit{Visuelle Prüfung} erfolgte in mehreren Schritten.
+    \section{Machbarkeitsanalyse}
+    Als ersten Schritt wurde hierfür eine grobe Machbarkeitsanalyse durchgeführt, anhand der ermittelt werden sollte,
+    ob die visuelle Identifizierung der Bauteile ohne bauliche Ergänzungen, wie QR- / Bar-Codes auf den Komponenten erfolgen kann.
+    Dazu wurde primär Literatur-Recherche betrieben.
+    Die Recherche fächerte sich dabei auf in wissenschaftliche Arbeiten, die sich mit der automatisierten Identifikation von Bildinhalten beschäftigen.
+    Beispiele hierfür sind die Identifikation von Unterschriften~\cite{Munich2003} oder andere, untergeordnete Komponenten, wie Schrauben~\cite{Lehr2019}.
+    \section{Einarbeitung}
+    Nachdem festgestellt werden konnte, dass die Objekterkennung und Identifikation von augenscheinlich ähnlichen Objekten möglich ist, wurde sich in die Bildverarbeitungstools eingearbeitet.
+    Durch den Praxispartner konnten hierbei Libraries wie OpenCV, oder Pillow genannt werden.
+    Diese verfügen zu der umfangreichen Funktionspalette eine vollständige Dokumentation, die bei der Umsetzung unterstützt (/todo{Opencv-Seite anfügen}).
+
+    In der Einarbeitung in die Tools konnte auf verschiedene Ansätze gestoßen werden, auf die im Folgenden eingegangen wird.
+    \subsection{Template Matching}
+    Der erste Ansatz, der verfolgt wurde, war das Template-Matching.
+    Dieses hat das Ziel einen Bild in einem anderen Bild zu finden und zurückzugeben.\cite{CV2TemplateMatching2022}
+    Die Attraktivität des Ansatzes ergibt sich aus dem Umfang der Implementierung, die in weniger als 20 Zeilen umsetzen lässt.
+    Jedoch muss für ein positives Ergebnis das Request-Bild zwingend eine Teilmenge des Hauptbildes sein, wobei sich maximal die Pixeldichte der Bilder unterscheiden darf.
+    Da dies ein eindeutiges Ausschlusskriterium darstellt, wurde die Weiterverfolgung des Ansatzes für die Umsetzung von DPP-Visual früh eingestellt.
+
+    \subsection{Feature-Matching}
+    Das Feature-Matching stellte hierbei eine vielversprechendere Variante für die Objekterkennung elektronischer Komponenten dar.
+    Dieses Beschreibt den Vorgang, dass anhand eines ausgewählten Algorithmus markante Punkte (= Key-Points) in einem Bild erhoben werden.
+    Zu jedem Key-Point wird anschließend eine Beschreibung in Hinblick auf die Daten seiner umliegenden Pixel erstellt.
+    Diese Beschreibung ermöglicht den Vergleich zweier Bilder, indem die Key-Point auf Ähnlichkeiten geprüft werden.\cite{CV2FeatureMathing2022}
+
+    Sowohl für den Prozess der Analyse der Key-Points im Bild, als auch der Ähnlichkeitsvergleich (= Matching) der zwischen Request-Bild und der Vorlage
+    existieren verschiedene Algorithmen, die einen Einfluss auf die Ergebnismenge haben.
+    Bei der Analyse der Key-Points stehen unter anderem die Algorithmen
+    \begin{itemize}
+        \item SIFT
+        \item SURF
+        \item ORB
+    \end{itemize}
+    zur Verfügung.
+    Die verschiedenen Algorithmen unterscheiden sich einerseits in ihrer Komplexität und damit auch in ihrer Geschwindigkeit, sowie in dem Umfang ihrer Ergebnismenge.
+    Einen Überblick über die Vor- und Nachteile liefern \citet{Karami2017}.
+    Zudem wurde die Auswahl empirisch getestet, indem eine Teilmenge der Algorithmen umgesetzt und ihr Ergebnis mit einem Test-Datensatz überprüft wurden.
+    Während der ORB-Algorithmus die Key-Points am schnellsten analysierte, gab dieser lediglich die Hälfte der Key-Points des SIFT-Algorithmus zurück.
+    Dahingegen war der SURF-Algorithmus langsamer, als der SIFT und lieferte eine vergleichbare Menge an Key-Points zurück.
+    Da die Durchlaufzeit der Anwendung eine geringere Priorität als die Zuverlässigkeit der Erkennung besitzt, fiel die Entscheidung auf den SIFT-Algorithmus.
+
+    Das Matching hat die Aufgabe, die Descriptor zweiter Key-Points miteinander zu vergleichen und festzustellen, ob sie Ähnlich zueinander sind.
+    Hierbei gibt es ebenso mehrere Ansätze, von denen vor allem zwei in der Dokumentation von OpenCV vertreten sind:
+    \begin{itemize}
+        \item BruteForce
+        \item FlannBased
+    \end{itemize}
+
+    Das BruteForce-Verfahren ermittelt hierbei die $L_{2}$-Norm von jedem Key-Point zu jedem Key-Point, wodurch sich die Menge der Rechenschritte durch die Funktion
+\begin{center}
+    $f(x) = n * m,$ \\
+    $wobei~n= Menge~der~ermittelten~Keypoints~im~Requestbild;$\\
+    $m = Menge~der~Key-Points~im~Template-Bild$\\
+\end{center}
+    beschreiben lässt.
+    Die Komplexitätsstufe nach Landau-Notation beträgt im worst case folglich näherungsweise $O(n^{2})$.
+
+    Einen weniger komplexen Ansatz soll hierbei der FlannBased-Matching-Algorithmus liefern.
+    Im Flann Algorithmus soll der \textit{approximate nearest neighbor} ermittelt werden, der nicht zwangsläufig der nächste Nachbar (entspricht dem Punkt mit der größten Ähnlichkeit) sein muss,
+    ihm jedoch sehr nahekommt.
+    Zur Ermittlung des \textit{aproximate nearest neighbors} wird der Datensatz in einen KD-Tree überführt, der es erlaubt, dass sich die Menge der zu vergleichenden Key-Points sich auf ein KD-Tree-Feld begrenzt.
+    Unter der Annahme einer gleichmäßigen Verteilung aller Punkte über die KD-Tree-Felder würde die sich die Anzahl der Rechenschritte somit auf
+    \begin{center}
+        $f(x) = (m*n) / k, $ \\
+        $wobei~n= Menge~der~ermittelten~Keypoints~im~Requestbild;$\\
+        $m = Menge~der~Key-Points~im~Template-Bild$\\
+        $k = Menge~der~KD-Tree-Felder$\\
+    \end{center}
+    begrenzen.
+
+    In einem direkten Vergleich mit einem Beispieldatensatz konnte festgestellt werden, dass der FlannBased-Matcher nahezu identische Ergebnisse wie der BruteForce-Matcher liefert.
+    In Kombination mit der Ersparnis von Rechenleistung fiel die Entscheidung somit auf den FlannBased-Matcher.\\
 
 
-    \section{Programmiersprache}
+
+    Der Rückgabewert der Methoden, die die generierten Key-Points matchen beinhaltet einen Array von Positionen, die darstellen, wo in dem Request-Bild Übereinstimmungen mit dem Vorlage-Bild gefunden werden konnten.
+    Da diese Übereinstimmungen auch fehlerhafte Werte beinhalten, die sich über das ganze Bild verstreuen können, musste im darauffolgenden Schritt eine Methode erarbeitet werden, um Fehlerdaten zu erkennen.
+    \todo{Bild der Keypoints einfügen}
+
+    Bei Betrachtung der Verteilung der Matching-Positionen im Request-Bild lässt sich erkennen, dass sich die Punkte nicht gleichermaßen über das Bild verteilen, sondern sich meist ein Punkt-Zentrum mit höherer Punkte-Konzentration bildet.
+    Beim Abgleich dieses Zentrums mit dem Request-Bild kann festgestellt werden, dass sich das gesuchte Objekt meistens in dem ermittelten Zentrum befindet.
+    Die Punkte, die außerhalb des Zentrums liegen, sind somit fehlerhafte Daten oder Ausreißer.
+    Zur generischen Ermittlung der Ausreißer (= Outlier) wurden verschiedene Ansätze erarbeitet.
+
+    \subsection{Bereinigtes KMeans-Cluster}
+    Zu Beginn wurde für die Ermittlung des Punktezentrums und die Ausreißer ein Clustering des Datensatzes mittels KMeans durchgeführt.
+    Da KMeans jeden Punkt des Datensatzes einem Cluster zuordnet, werden auch Outlier, die ggf. fehlerhaft sind in das Cluster aufgenommen,
+    sofern ihre euklidische Distanz zum Cluster-Schwerpunkts (= Centroid) des korrekten Clusters geringer ist, als die zu den restlichen Clustern.
+    Das Ergebnis ist, dass es zum einen mehrere Cluster gibt, die im weiteren Verlauf als gesuchten Bildausschnitt gewertet werden können.
+    Zum anderen bewirken Datenpunkte, die stark von ihrem Cluster-Centroid abweichen, dass sich die Außenkanten des Bildausschnitts nach außen hin ausweiten.
+    Eine Überlegung zur Beseitigung dieser Datenpunkte war die Minimierung des Clusters auf seine Standardabweichung.
+    Hierzu wurde die Standardabweichung in beiden Dimensionen ermittelt, wodurch sich ein Kreis mit dem Radius $\sigma$ um den Centroid des Clusters bildete.
+    Im folgenden Schritt wurden alle Punkte, die Element des Clusters sind und sich außerhalb dieses Kreises befinden eliminiert.
+
+    Aus diesem Ansatz heraus ergaben sich zwei Fragen:
+    \begin{itemize}
+        \item Welches der k Cluster repräsentiert den korrekten Bildausschnitt?
+        \item Welcher ist der korrekte Schwellenwert, um Outlier zu definieren?
+    \end{itemize}
+
+    Für die Frage des Outlier-Schwellenwerts können alternative Ansätze hierbei verfolgt werden.
+    Als Beispiele kann die \textit{Depth-Based Outlier detection} oder die \textit{Extreme Value Analysis} genannt werden, die zielführendere Ergebnisse als die Ermittlung per Standardabweichung liefern können.
+    Dennoch bleibt dann weiterhin die Frage, welches der Cluster den gesuchten Bildausschnitt korrekt repräsentiert.
+    Weder das Cluster mit der größten Datenpunkt-Dichte, noch das Cluster mit der größten Datenpunkt-Anzahl kann in jedem Fall eindeutig das Bild identifizieren.
+
+    Ein weiterer Ansatz, der kurze Zeit verfolgt wurde, war die Identifizierung über Farbhistogramme.
+    Hierbei wurden Farbhistogramme aller geclusterten Bildausschnitte, sowie dem Template-Bild erstellt.
+    Farbhistogramme stellen die Verteilung der Graustufen-Werte anhand eines 2D-Graphen dar.
+    Dabei repräsentiert die x-Achse die Graustufe (Wert zwischen 0 und 255), und die y-Achse die Anzahl an Pixeln, die diesen Farbwert besitzen.
+
+    Die Farbhistogramme der geclusterten Bildausschnitte wurden im Anschluss auf Ähnlichkeit mit dem Farbhistogramm des Template-Bilds verglichen.
+    Die Ermittlung der Ähnlichkeit erfolgte mittels vierer Algorithmen (Korrelation, Chi-Quadrat, Intersection und Hellinger) die im Anschluss miteinander korreliert wurden.
+    Als korrekter Bildausschnitt wurde derjenige identifiziert, dessen Ähnlichkeit am höchsten war.
+
+    Das Ergebnis des Farbhistogramm-Ansatzes wurde mittels eines Test-Datensatzes geprüft.
+    Dabei wurden hohe Fehlerquoten festgestellt.
+    Es ließ sich daraus schließen, dass die Identifizierung des korrekten Clusters über KMeans nicht ohne Weiteres möglich ist.
+    Aus diesem Grund wurde im weiteren Verlauf auf einen alternativen Clustering-Algorithmus umgestiegen.
+
+    \subsection{DBSCAN}
+    Der \textit{DBSCAN} Clustering-Algorithmus hat im Vergleich zu Algorithmen wie KMeans entscheidende Unterschiede, die für die Umsetzung der Objekterkennung vorteilhaft sind.
+    Einer der wichtigsten Vorteile ist hierbei die Basis der Cluster-Ermittlung.
+    Diese geschieht in DBSCAN über die Dichte des Clusters, anstatt über die euklidische Distanz zum Centroid.
+    Konkreter wird, ein Datenpunkt dem Cluster seines nächsten Nachbarn zugerechnet.
+    Die Zurechnung erfolgt jedoch nur dann, wenn die Konditionen der Übergabeparameter erfüllt sind.
+
+    Als eine dieser Konditionen gilt der Parameter \textit{min-pts}, die Toleranz für Rauschen beschreibt.
+    Rauschen tritt dann auf, wenn zu wenig Datenpunkte vorhanden sind, um ein eigenes Cluster zu bilden.
+    Diese Rauschwerte sollen folglich als Outlier markiert werden.
+
+    Der Übergabeparameter \textit{eps} dahingegen beschreibt die maximale Distanz zu seinem nächsten Nachbarn, bis ein Datenpunkt als Outlier bezeichnet wird.
+    \autoref{tab:matrix-dbscan} zeigt die Auswirkung der Wahl der Übergabeparameter auf das Clustering-Ergebnis bei DBScan.
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{c | c | c}
+            & eps groß & eps klein \\ \hline
+            min-pts groß & wenige sehr große Cluster & große Anzahl an Outlier\\ \hline
+            min-pts klein & viele kleine Cluster, kaum Outlier & viele kleine Cluster, wenig Outlier
+        \end{tabular}
+        \caption{Auswirkungen der Parameter-Wahl \textit{min-pts} und \textit{eps} auf DBSCAN-Cluster}
+        \label{tab:matrix-dbscan}
+    \end{table}
+
+    Auf die Wahl der Parameter wird in \autoref{sec:umsetzung} weiter eingegangen.
+
+    Wie die Funktionsweise von DBSCAN zeigt, ist die Zahl der Cluster im Gegensatz zu den meisten anderen Cluster-Algorithmen variabel.
+    Diese Eigenschaft ist für die Implementierung der Objekterkennung dahingehend vorteilhaft, dass keine Cluster \glqq erzwungen\grqq{} werden.
+    Sollte ein gesuchtes Objekt in dem Requestbild nicht vorhanden sein, würde das Clustering alle Datenpunkte als Rauschen oder Outlier kennzeichnen, wodurch kein Cluster entstünde.
+
+    Anhand eines Test-Datensatzes wurde versucht, diese Vorteile in der Praxis zu bestätigen.
+    Nachdem das Clustering des Test-Datensatzes durchwegs positiv war, wurde sich auf den DBSCAN-Algorithmus für das Clustering entschieden.
+
+    \subsection{Haar-Cascade-Ansatz}
+    \todo{ggf. Ausformulieren}
+    
+    \section{Konzeption}
+    \subsection{Programmiersprache}
     Im Zuge der Implementierung des Moduls DPP Visual werden zahlreiche Methoden der Bildverarbeitung und des
     Computer-Visions benötigt.
     Zudem werden Algorithmen zum Umgang mit großen Datenmengen, wie Clustering verwendet.
@@ -167,21 +313,41 @@
     Diese Kombination ermöglicht es eine webbasierte Oberfläche umzusetzen, die das Testen mit einem mobilen Endgerät
     (Tablet, Smartphone) ermöglicht und somit die simultane Überprüfung der Anwendungsergebnisse vereinfacht.
 
+    \subsection{Entwurfsmuster}\label{subsec:entwurfsmuster}
+    \todo{Factory Pattern ?}
 
-    \section{Konzeption Visuelle Prüfung}
-    \begin{itemize}
-        \item Aufbau des Services \textit{Visuelle Prüfung}
-    \end{itemize}
+    \subsection{Aufbau des Tools} \label{subsec:aufbau-des-tools}
+    Der Aufbau des Tools erfolgte nach dem bereits vorgestellten Factory-Pattern. 
+    Unter Vernachlässigung der App-Factory Klassen und Methoden gliederte sich der Aufbau in die View und das Backend.
+    Bei der Implementierung der View wurden zum einen die tatsächliche Benutzeroberfläche in der Auszeichnungssprache HTML mit der Template-Engine \textit{Jinja} und JavaScript erstellt.
+    Diese war für die Entgegennahme der Benutzerinteraktionen und die Darstellung der Inhalte verantwortlich.
+    Zur Steuerung der View wurde zusätzlich eine View-Model-Schicht hinzugenommen, die als harmonisierende Schicht zwischen Frontend und Backend zuständig ist.
+    Diese Schicht wurde in Python-Flask realisiert, das es ermöglicht über Flask-charakteristische Decorator wie \textit{@app.route} URLs zur Verfügung zu stellen, über die Methoden aufgerufen werden können.
 
+    Im Backend wurde dahingegen die Logik der Objekterkennung, sowie die Schnittstellen zur virtuellen Maschinenakte realisiert.
+    Das Logik-Element teilt sich auf in die Clustering-Logik und die Computer-Vision-Logik, für die jeweils eigene Skripte angelegt wurden, die aus dem View-Model heraus erreichbar sind.
 
+    Eine visuelle Darstellung der Skripte mit den wesentlichen Methoden ist der nachstehenden \todo{UML Anlegen, UML Einbinden} Abbildung zu entnehmen.
+    
     \section{Umsetzung}
-    \begin{itemize}
-        \item Kerninhalte des Codes
-        \item Wie bin ich auf die Inhalte gekommen?
-        \item Abfolge der Algorithmen
-    \end{itemize}
+    Im folgenden Kapitel wird die Umsetzung des Moduls \textit{DPP Visual} beschrieben.
+    Dabei wird vor allem auf die Logik und Routine der Objekterkennung eingegangen.
+    Diese ergibt sich, wie in \autoref{subsec:aufbau-des-tools} dargestellt aus den zwei Skripten, \textit{object\_detector.py} und \textit{cluster\_handler.py}.
+
+    \subsection{Skript object\_detector.py}
+    Das Skript \textit{object\_detector.py} beinhaltet die gesamte Logik der Objekterkennung mit Ausnahme des Clusterings.
+    Zur Erkennung eines Objects wird die Methode \textit{detect\_object(image, template\_collection)} aufgerufen, die als Übergabeparameter sowohl das Request-Bild, als auch einen Array von Vorlage-Bildern enthält.
+    Im ersten Teil der Methode werden die Bilder zu einem, für OpenCV verständlichen Format verändert.
+    Im Anschluss erfolgt das Ermitteln der Key-Points, indem sowohl das Request-Bild, als auch die Vorlage-Bilder in die Methode \textit{SIFT\_detector()} übergeben werden (Vgl. \autoref{SIFT_detector}).
+    Die Rückgabe der Methode beinhaltet sowohl eine Sammlung von Key-Points des Request-Bilds, als auch einen Array der für jeden Eintrag die Key-Points eines Vorlage-Bilds enthält.
+
+    Diese beiden Rückgabewerte werden darauffolgend in die Matching-Methode \textit{flann\_matcher()} übergeben, die alle Matching-Positionen im Request-Bild zurückgibt (Vgl. \autoref{flann_matcher}).
+    Die erhaltenen Matching-Positionen werden in im nächsten Schritt mittels im separierten Skript \textit{cluster\_handler.py} in Cluster überführt.
 
 
+    \subsubsection{Methode SIFT\_detector()} \label{SIFT_detector}
+
+    \subsubsection{Methode flann\_matcher()} \label{flann_matcher}
 
     \chapter{Evaluation}
     \section{Testumgebung}
