@@ -257,7 +257,7 @@
     Es ließ sich daraus schließen, dass die Identifizierung des korrekten Clusters über KMeans nicht ohne Weiteres möglich ist.
     Aus diesem Grund wurde im weiteren Verlauf auf einen alternativen Clustering-Algorithmus umgestiegen.
 
-    \subsection{DBSCAN}
+    \subsection{DBSCAN}\label{subsec:dbscan}
     Der \textit{DBSCAN} Clustering-Algorithmus hat im Vergleich zu Algorithmen wie KMeans entscheidende Unterschiede, die für die Umsetzung der Objekterkennung vorteilhaft sind.
     Einer der wichtigsten Vorteile ist hierbei die Basis der Cluster-Ermittlung.
     Diese geschieht in DBSCAN über die Dichte des Clusters, anstatt über die euklidische Distanz zum Centroid.
@@ -319,15 +319,20 @@
     \subsection{Aufbau des Tools} \label{subsec:aufbau-des-tools}
     Der Aufbau des Tools erfolgte nach dem bereits vorgestellten Factory-Pattern. 
     Unter Vernachlässigung der App-Factory Klassen und Methoden gliederte sich der Aufbau in die View und das Backend.
-    Bei der Implementierung der View wurden zum einen die tatsächliche Benutzeroberfläche in der Auszeichnungssprache HTML mit der Template-Engine \textit{Jinja} und JavaScript erstellt.
+    Bei der Implementierung der View wurden zum einen die tatsächliche Benutzeroberfläche in der Auszeichnungssprache
+    HTML mit der Template-Engine \textit{Jinja} und JavaScript erstellt.
     Diese war für die Entgegennahme der Benutzerinteraktionen und die Darstellung der Inhalte verantwortlich.
-    Zur Steuerung der View wurde zusätzlich eine View-Model-Schicht hinzugenommen, die als harmonisierende Schicht zwischen Frontend und Backend zuständig ist.
-    Diese Schicht wurde in Python-Flask realisiert, das es ermöglicht über Flask-charakteristische Decorator wie \textit{@app.route} URLs zur Verfügung zu stellen, über die Methoden aufgerufen werden können.
+    Zum anderen wurde zusätzlich eine View-Model-Schicht hinzugenommen, die als harmonisierende Schicht zwischen
+    Frontend und Backend zuständig ist.
+    Diese Schicht wurde in Python-Flask realisiert, das es ermöglicht über Flask-charakteristische Decorator wie
+    \textit{@app.route} URLs zur Verfügung zu stellen, über die Methoden aufgerufen werden können.
 
     Im Backend wurde dahingegen die Logik der Objekterkennung, sowie die Schnittstellen zur virtuellen Maschinenakte realisiert.
-    Das Logik-Element teilt sich auf in die Clustering-Logik und die Computer-Vision-Logik, für die jeweils eigene Skripte angelegt wurden, die aus dem View-Model heraus erreichbar sind.
+    Das Logik-Element teilt sich auf in die Clustering-Logik und die Computer-Vision-Logik, für die jeweils eigene
+    Skripte angelegt wurden, die aus dem View-Model heraus erreichbar sind.
 
-    Eine visuelle Darstellung der Skripte mit den wesentlichen Methoden ist der nachstehenden \todo{UML Anlegen, UML Einbinden} Abbildung zu entnehmen.
+    Eine visuelle Darstellung der Skripte mit den wesentlichen Methoden ist der nachstehenden
+    \todo{UML Anlegen, UML Einbinden} Abbildung zu entnehmen.
     
     \section{Umsetzung}
     Im folgenden Kapitel wird die Umsetzung des Moduls \textit{DPP Visual} beschrieben.
@@ -336,24 +341,109 @@
 
     \subsection{Skript object\_detector.py}
     Das Skript \textit{object\_detector.py} beinhaltet die gesamte Logik der Objekterkennung mit Ausnahme des Clusterings.
+    Die Ausführung des Skripts \textit{object\_detector.py} geschieht, nachdem über die Benutzerschnittstelle das Request-Bild zusammen mit der Seriennummer des zu prüfenden Schaltschranks eingegeben wurde und die Daten zum Schaltschrank aus der digitalen Maschinenakte gelesen wurden.
+    Dabei wird das Skript für jede verfügbare, zu testende Komponente im Schaltschrank einmal ausgeführt.
     Zur Erkennung eines Objects wird die Methode \textit{detect\_object(image, template\_collection)} aufgerufen, die als Übergabeparameter sowohl das Request-Bild, als auch einen Array von Vorlage-Bildern enthält.
     Im ersten Teil der Methode werden die Bilder zu einem, für OpenCV verständlichen Format verändert.
-    Im Anschluss erfolgt das Ermitteln der Key-Points, indem sowohl das Request-Bild, als auch die Vorlage-Bilder in die Methode \textit{SIFT\_detector()} übergeben werden (Vgl. \autoref{SIFT_detector}).
+    Im Anschluss erfolgt das Ermitteln der Key-Points, indem sowohl das Request-Bild, als auch die Vorlage-Bilder in die Methode \textit{SIFT\_detector()} übergeben werden.
     Die Rückgabe der Methode beinhaltet sowohl eine Sammlung von Key-Points des Request-Bilds, als auch einen Array der für jeden Eintrag die Key-Points eines Vorlage-Bilds enthält.
 
     Diese beiden Rückgabewerte werden darauffolgend in die Matching-Methode \textit{flann\_matcher()} übergeben, die alle Matching-Positionen im Request-Bild zurückgibt (Vgl. \autoref{flann_matcher}).
-    Die erhaltenen Matching-Positionen werden in im nächsten Schritt mittels im separierten Skript \textit{cluster\_handler.py} in Cluster überführt.
+    Die erhaltenen Matching-Positionen werden im nächsten Schritt im separierten Skript \textit{cluster\_handler.py} in Cluster überführt.
+
+    Nachdem die Cluster ermittelt wurden, wird das Cluster mit den meisten Datenpunkten ausgewählt und die linke obere, sowie die rechte untere Ecke als Position im Bild zurückgegeben.
 
 
-    \subsubsection{Methode SIFT\_detector()} \label{SIFT_detector}
+    \subsubsection{Key-Detector und -Matcher}
+    Ein Kernelement, der eben dargestellten Objekterkennungsroutine ist das Ermitteln und Matchen der Key-Points im Bild.
+    Bei diesem Prozess wurde für das Ermitteln der Key-Points der SIFT-Algorithmus und für das Matchen der FLANN-based Matcher gewählt.
+    Beim Ermitteln der Key-Points und der Beschreibungen wird dazu für jedes Bild die Methode \textit{detectAndCompute()} aufgerufen, die als Übergabeparameter, das Bild und die Konfiguration des Detection-Algorithmus erhält.
+    Für die Konfiguration wurde in der Umsetzung None als Default-Parameter übergeben.
+    Die ermittelten Key-Points und ihre Beschreibungen für jedes Bild werden als Tupel in einem Array abgelegt und schließlich zurückgegeben.
+    Der SIFT-Algorithmus agiert dabei vollends deterministisch.
 
-    \subsubsection{Methode flann\_matcher()} \label{flann_matcher}
+    Der FLANN-based Matcher erhält nach Vollendung der Key-Point-Ermittlung alle Key-Points und Beschreibungen und vergleicht die einzelnen Vorlage-Key-Points mit denen des Request-Bilds.
+    Dabei wird über die einzelnen Bilder (repräsentiert durch die Key-Points und Beschreibungen) iteriert und für jeden Durchlauf nach Ähnlichkeit zu den Key-Points des Request-Bilds gesucht.
+    Die Ähnlichkeit wird dabei als $L_{2}$-Norm dargestellt.
+    Ein tatsächliches Matching liegt folglich nur vor, wenn gilt $l_{2} > x,~wobei~x~\epsilon~[0; 1]$.
+    Eine Ähnlichkeit von 1 würde dabei einer vollkommenen Übereinstimmung entsprechen.
+
+    In der Umsetzung des Tools wurde für die notwendige Ähnlichkeit 0,6 gewählt.
+    Die Ermittlung des Werts gelang durch die Analyse der Verteilung der Ähnlichkeiten.
+    Die Wahl eines Werts über 0,6 verringerte die Anzahl der Matches dabei um circa 50 \%, wodurch die Wahrscheinlichkeit erhöht wird, dass kein Cluster gebildet werden kann.
+    Bei der Wahl eines Werts unter 0,6 stieg wiederum die Fehlerquote massiv an, wodurch die Eliminierung der Outlier und des Rauschens im Cluster erschwert wurde.
+
+    Das Ergebnis des Key-Matchers ist ein Array mit Positionen, die darstellen, an welchen Positionen im Bild Übereinstimmungen gefunden werden konnten.
+    Diese Positionen werden im Anschluss im Clustering analysiert
+
+    \subsubsection{Clustering} \label{subsubsec:clustering}
+    Das Clustering ist das zweite Kernelement der Objekterkennung.
+    Dieses hat die Aufgabe, die einzelnen Datenpunkte, die Matches darstellen zu gruppieren und anhand dessen die Bauteilränder im Request-Bild zu ermitteln.
+    Dazu werden alle Positionen die im Request-Bild als Match identifiziert werden konnten als (x, y)-Tupel dargestellt und über den DBSCAN-Algorithmus geclustert.
+    Der Clustering-Algorithmus DBSCAN erhält dafür, wie in \autoref{subsec:dbscan} dargestellt die zwei Übergabeparameter \textit{eps} und \textit{min\_samples}.
+    Die Ermittlung der beiden Werte erfolgte in einem iterativen Prozess.
+    Dabei wurden ein kleiner Wert für \textit{min\_samples} gewählt (hier: $len(matches) / 10 $) und anhand eines Test-Datensatzes die euklidische Distanz jedes Punktes zu seinem nächsten Nachbarn ermittelt.
+    Nach der aufsteigender Sortierung der Distanzen und Zeichnung des Graphen bildet sich eine Abwandlung der Exponential-Funktion mit diskreten Werten.
+    Der optimale Wert für Epsilon ist dem y-Wert zu entnehmen, an dem der Graph eine gravierende Steigungsänderung besitzt.\citep{Maklin2019}
+    Im nächsten Schritt wurde \textit{min\_samples} erhöht und die Zuverlässigkeit des Clusterings beurteilt.
+    Diese Schritte wurden wiederholt, bis das Clustering das korrekte Ergebnis lieferte.
+    Unter der Konfiguration $eps = 180; ~ min\_samples=len(matches) / 4$ lieferte der DBSCAN-Algorithmus für den Test-Datensatz die korrekten Outlier, womit der Konfigurationsprozess abgeschlossen war.
+
+    Nachdem die Outlier und Rauschdaten eliminiert werden konnten, bleiben letztlich nur die Werte, die das gesuchte Bauteil repräsentieren.
+    Diese werden folglich zurückgegeben.
+
 
     \chapter{Evaluation}
-    \section{Testumgebung}
-    \section{Testablauf}
-    \section{Testergebnis}
+    Im Zuge der Evaluation sollte die Funktionsweise des entwickelten Systems bewertet werden.
+    Hierbei handelt es sich sowohl um die digitalen Maschinenakte, als auch auf das Modul \textit{DPP Visual}.
+    Aufgrund der Größe des Projekts und der entsprechend kurzen Zeit des Praktikums erfolgte die Evaluation nur im begrenzten Rahmen.
+    Dabei wurde das Modul \textit{DPP Visual} auf die allgemeine Funktionsweise geprüft, sowie auf die Grenzen des Systems und die Dauer des Prüfverfahrens.
+    Da das Modul \textit{DPP Visual} die Funktionsweise digitale Maschinenakte mit einschließt, und diese wenig kritische Elemente besitzt, wurde sich bei der Evaluation auf \textit{DPP Visual} beschränkt.
 
+    Das entwickelte Tool wurde auf dem Python3-Development-Server gehostet.
+    Dieser lief auf einem Mac Mini mit 3,2 GHz 6-Core Intel Core i7 und 16 GB DDR4 RAM.
+
+    Für die Evaluation wurde in die digitale Maschinenakte der elektronische Schaltplan eines PH-Cell-Schaltschranks eingepflegt.
+    Dieser enthält die Stückliste, die alle Komponenten beinhaltet.
+    Davon wurden vier Komponenten ausgewählt, für die jeweils 9 bis 17 Bilder der jeweiligen Komponente in die digitale Maschinenakte hinzugefügt wurden (insgesamt 57 Bilder).
+    Die kleinste Komponente besitzt dabei eine Größe von 2 x 8 x 8, die größte Komponente 10 x 10 x 10 (Breite x Höhe x Tiefe jeweils in Centimeter)\todo{Bilder der Komponenten einfügen}.
+
+    Als Nächstes wurde eine Bestellung simuliert, indem eine PH-Cell-Schaltschrank-Instanz im System aufgenommen wurde.
+
+    Zur Prüfung der Funktionsweise und der Grenzen der Objekterkennung wurden mehrere Bilder, von korrekt aufgebauten Schaltschränken als Request-Bilder verwendet.
+    Diese wurden mit der Kamera eines Apple iPhone 12s unter guter Belichtung aufgenommen.
+    Zur Prüfung der allgemeinen Funktionsweise war die Perspektive der Bilder komplett frontal (10 Bilder).
+    Im nächsten Schritt erfolgten die Aufnahmen aus verschiedenen Winkeln bis hin zu + / - 45° (5 Bilder aus positivem, 5 Bilder aus negativem Winkel).
+    Weiter wurden Aufnahmen des Schaltschranks gemacht, auf denen einzelne Komponenten nicht vorhanden bzw. zu sehen waren (4 Bilder).
+
+    Zuerst wurden die Frontalaufnahmen zusammen mit der Seriennummer jeweils in die Eingabemaske eingegeben und die Prüfung gestartet.
+    Im nächsten Schritt wurde schrittweise der Winkel zum Schaltschrank erhöht.
+    Als letztes Testszenario wurden die Aufnahmen verwendet, auf denen Komponenten fehlen.
+
+    \section{Ergebnis}
+    Das Ergebnis der Evaluation zeigte, dass das Tool grundlegend funktioniert.
+    Vor allem bei den Frontalaufnahmen wurden mit wenigen Ausnahmen alle gesuchten Komponenten erkannt.
+    Die Markierung auf den Bildern stimmten dabei jedoch nicht immer mit den Außenkanten der Komponenten überein.
+    Bei den Frontalaufnahmen mit fehlenden Komponenten wurde mit einer Ausnahme immer auf das Fehlen hingewiesen.
+
+    Bei den Aufnahmen aus verschiedenen Winkeln konnte sich das System weniger beweisen.
+    Hierbei traten Fehler bereits ab circa + / - 20° auf, sodass teilweise mehrere Komponenten entweder nicht erkannt wurde, oder die Komponenten an falschen Stellen erkannt werden.
+
+    \textit{False-Negative}-Fälle traten nur in zwei der 25 Tests auf, wohingegen \textit{False-Positiv}-Fälle deutlich häufiger auftraten.
+    Dennoch sind die fehlerfreien Durchläufe in den Tests am meisten vertreten.
+
+    Zu bemängeln ist die Durchlaufzeit Objekterkennung.
+    Diese beträgt für einen Durchlauf unter den angegebenen Bedingungen zwischen 120 und 180 Sekunden.
+    Zurückzuführen ist ein Großteil der Durchlaufzeit auf die Key-Point-Ermittlung mittels SIFT-Algorithmus.
+    Für die Ermittlung der Keypoints eines Bildes wird dabei circa 1,5 bis 2 Sekunden benötigt.
+
+
+    \section{Reflektion}
+    \begin{itemize}
+        \item Hauptroutine: Cluster mit meisten Datenpunkten: Nicht optimal
+        \item Key-Detector: Deterministisch --> Keypoints können einmalig generiert und in DB gespeichert werden
+        \item Clustering: Ermittlung Epsilon
+    \end{itemize}
    \chapter{Fazit}
 
     \begin{itemize}
