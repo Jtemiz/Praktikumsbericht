@@ -35,12 +35,29 @@
 
 
     \chapter{Einleitung und Motivation}
+    Die Idee der Fließbandfertigung geht auf das Ende des 19. Jahrhunderts zurück.
+    Zu dieser Zeit wurde in den Schlachthöfen Chicagos das erste Mal ein industrieller Wertschöpfungsprozess im Fließband-Verfahren erstellt.
+    Mit der Idee, dass sich eine Arbeitskraft während der gesamten Schicht nur einem Arbeitsschritt der gesamten Wertschöpfungskette widmet und das Produkt sich nach Abschluss zur nächsten Arbeitskraft bewegt, gelang es den Fertigungsprozess um ein vielfaches zu optimieren.
+    Dieselbe Absicht verfolgt seit mehreren Jahren der Fräsmaschinenhersteller DMG MORI AG.
+    Dieser hat zur Optimierung der Durchlaufzeiten im Produktionswerk Pfronten im Allgäu die Smart Factory ins Leben gerufen, die angelehnt an die Automobilindustrie in der Fertigung eine Fließbandfertigung vorsieht.
 
+    Diese Umstellung führte zu erhöhten Anforderungen an die Lieferanten des Fräsmaschinenherstellers.
+    Vor allem in der Fließband-Produktion wirken sich fehlerhafte Baugruppen negativ auf die Durchlaufzeit aus.
+    Im Falle eines Defekts, muss das gesamte Produkt aus dem Kreislauf entnommen werden und in der Nacharbeitungszone überarbeitet werden.
+    Um den gestiegenen Anforderungen seines Hauptkunden DMG MORI gerecht werden zu können, strebt der Schaltanlagenhersteller Besel und Schweller GmbH in Füssen an, die Einführung eines Qualitätssicherungssystem für die Schaltanlagen an.
+
+    Im Zuge dieses Praxisprojekts sollte hierfür der erste Stein gesetzt werden.
+    Dazu sollte im ersten Schritt die Erarbeitung eines groben Gesamtkonzepts der Individualsoftware \textit{DPP} erfolgen.
+    Zur Erarbeitung des Konzepts sollen hierfür die bereits gesammelten Ideen und Anforderungen an das System geordnet und strukturiert werden.
+    Aufbauend darauf sollte erörtert werden, wie das System zur besseren Wartung und Weiterentwicklung aufgebaut sein kann.
+
+    Als Schwerpunkt des Praxisprojekts sollte darauffolgend mit der Implementierung begonnen werden.
+    Hierbei wurde sich auf die Umsetzung der digitalen Maschinenakte und des Moduls \textit{DPP Visual} beschränkt.
 
     \chapter{Gesamtkonzept von DPP und Einordnung in Fertigungsprozess}
     Zur Umsetzung eines betrieblichen Anwendungssystems muss im ersten Schritt eine Konzeption erfolgen, die darstellt,
     wie die Anwendung gestaltet sein kann, um das gewünschte Ziel zu erfüllen.
-    Die Anfertigung der Konzeption erfolgte stets in enger Zusammenarbeit mit dem Product Owner, bzw dem Praxispartner.
+    Die Anfertigung der Konzeption erfolgte stets in enger Zusammenarbeit mit dem Product Owner, bzw. dem Praxispartner.
     Hierfür wurden wöchentlich im Meeting die Fortschritte am Projekt dargestellt, sowie die geplanten Vorhaben der kommenden Woche vorgestellt.
 
     \section{Anforderungen}
@@ -58,8 +75,7 @@
     Zur Verwirklichung des Systems ist es notwendig, die physische Entität des Schaltschranks um eine zusätzliche,
     virtuelle Dimension zu erweitern.
     Diese virtuelle Komponente lässt sich als eine digitale Maschinenakte beschreiben und begleitet das Produkt vom
-    Auftragseingang über die Produktion
-    bis hin zur Qualitätssicherung.
+    Auftragseingang über die Produktion bis hin zur Qualitätssicherung.
     Weiter wäre es denkbar, diese auch nach der Auslieferung noch besteht, um Wartungs- und Reparaturvorgänge
     dokumentieren zu können.
     Sie soll dem jeweiligen Schaltschrank über seine Seriennummer eindeutig zuordenbar sein, sodass sie dauerhaft
@@ -83,9 +99,8 @@
     Ziel der \ac{ktP} ist die Auflösung der isolierten Produktion von Schaltschrank und Mechanik.
     Hierbei soll die Maschine, für die die Schaltanlage gebaut wird, durch ein System simuliert werden.
     Der zu produzierende Schaltschrank wird hierzu während der Produktion mit einem Simulationssystem verbunden, dass die Logik der zugehörigen Maschine dauerhaft simuliert.
-    Liegt ein technischer Fehler im Schaltschrank vor, würde dieser Fehler direkt im Zuge der Produktion auffallen, bereits vor der Auslieferung auf den Defekt reagiert werden kann.
+    Liegt ein technischer Fehler im Schaltschrank vor, würde dieser Fehler direkt im Zuge der Produktion auffallen, sodass bereits vor der Auslieferung auf den Defekt reagiert werden kann.
     Weiter soll das System den derzeitigen Arbeitsfortschritt kennen, um ausschließlich die bisher funktionierenden Baugruppen zu prüfen und folglich realistische Fehlereinschätzungen zu liefern.
-
 
     Ein reduzierter Prototyp für Software und Hardware der \ac{ktP} existiert bereits.
     Diese ist bislang jedoch lediglich für eine Version eines Produkts ausgelegt und agiert ohne Kommunikation zu anderen Systemen.
@@ -95,10 +110,8 @@
     Eine Rücksprache mit dem Unternehmen EPLAN hat zu Beginn des Projektes stattgefunden.
     Dieses sicherte zu, zum Zwecke der Umsetzung der Schnittstellen bestmöglich zu unterstützen.
 
-    %TODO Simulation erklären
-    
     \subsection{Visuelle Prüfung}\label{subsec:visuelle-prufung}
-    Die visuelle Prüfung soll durch kameragestützte Sensorik erfolgen.
+    Die visuelle Prüfung soll durch kamera-gestützte Sensorik erfolgen.
     In der Qualitätssicherung soll dabei lediglich ein oder mehrere Fotos des jeweiligen Schaltschranks gemacht werden, die in das System geladen werden.
     Das System soll das Bild / die Bilder darauffolgend verarbeiten und auf mehrere Gesichtspunkte prüfen.
     Gesichtspunkte die vom Product Owner aufgezählt wurden sind
@@ -133,7 +146,13 @@
     bereitzustellen.
     Diese müssten dann lediglich zum Erhalt der Daten mit der digitalen Maschinenakte und zur Integration in den
     Fertigungsprozess mit dem Client gekoppelt werden.
-    \todo{Fertigstellen Sect ArchDPP}
+    Denkbar wäre es folglich die einzelnen Funktionen als eigenständige Module oder Services umzusetzen.
+    Dadurch wäre einerseits die Wartungsfähigkeit erleichtert, da die Änderung in einem Modul keine Auswirkungen auf die anderen hätte.
+    Weiter würde damit die Wiederverwendbarkeit und Erweiterbarkeit gesteigert werden.
+    Entscheidet sich der Schaltanlagenhersteller die einzelne Funktionen des Systems auch in anderen Werken einzusetzen, die wird lediglich die digitale Maschinenakte benötigt.
+    Die restlichen Module könnten folglich frei und unabhängig miteinander kombiniert werden.\\
+
+    Die Umsetzung eines der genannten Module wird im folgenden Kapitel beschrieben.
 
 
     \chapter{Implementierung \textit{Visuelle Prüfung}}
@@ -150,6 +169,7 @@
     Diese verfügen zu der umfangreichen Funktionspalette eine vollständige Dokumentation, die bei der Umsetzung unterstützt (/todo{Opencv-Seite anfügen}).
 
     In der Einarbeitung in die Tools konnte auf verschiedene Ansätze gestoßen werden, auf die im Folgenden eingegangen wird.
+
     \subsection{Template Matching}
     Der erste Ansatz, der verfolgt wurde, war das Template-Matching.
     Dieses hat das Ziel einen Bild in einem anderen Bild zu finden und zurückzugeben.\cite{CV2TemplateMatching2022}
@@ -264,7 +284,7 @@
     Konkreter wird, ein Datenpunkt dem Cluster seines nächsten Nachbarn zugerechnet.
     Die Zurechnung erfolgt jedoch nur dann, wenn die Konditionen der Übergabeparameter erfüllt sind.
 
-    Als eine dieser Konditionen gilt der Parameter \textit{min-pts}, die Toleranz für Rauschen beschreibt.
+    Als eine dieser Konditionen gilt der Parameter \textit{min-samples}, die Toleranz für Rauschen beschreibt.
     Rauschen tritt dann auf, wenn zu wenig Datenpunkte vorhanden sind, um ein eigenes Cluster zu bilden.
     Diese Rauschwerte sollen folglich als Outlier markiert werden.
 
@@ -273,11 +293,11 @@
     \begin{table}[h]
         \centering
         \begin{tabular}{c | c | c}
-            & eps groß & eps klein \\ \hline
-            min-pts groß & wenige sehr große Cluster & große Anzahl an Outlier\\ \hline
-            min-pts klein & viele kleine Cluster, kaum Outlier & viele kleine Cluster, wenig Outlier
+            & Epsilon groß & Epsilon klein \\ \hline
+            min-samples groß & wenige sehr große Cluster & große Anzahl an Outlier\\ \hline
+            min-samples klein & viele kleine Cluster, kaum Outlier & viele kleine Cluster, wenig Outlier
         \end{tabular}
-        \caption{Auswirkungen der Parameter-Wahl \textit{min-pts} und \textit{eps} auf DBSCAN-Cluster}
+        \caption{Auswirkungen der Parameter-Wahl \textit{min-samples} und \textit{Epsilon} auf DBSCAN-Cluster}
         \label{tab:matrix-dbscan}
     \end{table}
 
@@ -354,7 +374,7 @@
     Nachdem die Cluster ermittelt wurden, wird das Cluster mit den meisten Datenpunkten ausgewählt und die linke obere, sowie die rechte untere Ecke als Position im Bild zurückgegeben.
 
 
-    \subsubsection{Key-Detector und -Matcher}
+    \subsubsection{Key-Detector und -Matcher} \label{subsubsec:Key-Detector-Matcher}
     Ein Kernelement, der eben dargestellten Objekterkennungsroutine ist das Ermitteln und Matchen der Key-Points im Bild.
     Bei diesem Prozess wurde für das Ermitteln der Key-Points der SIFT-Algorithmus und für das Matchen der FLANN-based Matcher gewählt.
     Beim Ermitteln der Key-Points und der Beschreibungen wird dazu für jedes Bild die Methode \textit{detectAndCompute()} aufgerufen, die als Übergabeparameter, das Bild und die Konfiguration des Detection-Algorithmus erhält.
@@ -380,7 +400,7 @@
     Das Clustering ist das zweite Kernelement der Objekterkennung.
     Dieses hat die Aufgabe, die einzelnen Datenpunkte, die Matches darstellen zu gruppieren und anhand dessen die Bauteilränder im Request-Bild zu ermitteln.
     Dazu werden alle Positionen die im Request-Bild als Match identifiziert werden konnten als (x, y)-Tupel dargestellt und über den DBSCAN-Algorithmus geclustert.
-    Der Clustering-Algorithmus DBSCAN erhält dafür, wie in \autoref{subsec:dbscan} dargestellt die zwei Übergabeparameter \textit{eps} und \textit{min\_samples}.
+    Der Clustering-Algorithmus DBSCAN erhält dafür, wie in \autoref{subsec:dbscan} dargestellt die zwei Übergabeparameter \textit{Epsilon} und \textit{min\_samples}.
     Die Ermittlung der beiden Werte erfolgte in einem iterativen Prozess.
     Dabei wurden ein kleiner Wert für \textit{min\_samples} gewählt (hier: $len(matches) / 10 $) und anhand eines Test-Datensatzes die euklidische Distanz jedes Punktes zu seinem nächsten Nachbarn ermittelt.
     Nach der aufsteigender Sortierung der Distanzen und Zeichnung des Graphen bildet sich eine Abwandlung der Exponential-Funktion mit diskreten Werten.
@@ -443,23 +463,35 @@
     \section{Weiterentwicklung und Reflektion}
     Wie anhand des Testergebnisses zu sehen ist, leistet das Modul \textit{DPP Visual} für den Anfang gute Ergebnisse.
     Innerhalb der bislang umgesetzten Funktionen ist einerseits die Fehleranfälligkeit bei Aufnahmen außerhalb der Frontalperspektive verbesserungswürdig.
-    Andererseits müssen auch diverse Optimierungen vorgenommen werden, um die Durchlaufzeit zu minimieren.
-
-    Ebenso im Rahmen der Implementierung wurden Elemente umgesetzt, die für künftige Weiterentwicklungen optimiert werden können.
-    Als ein Beispiel ist hierbei die Auswahl des Clusters in der Hauptroutine zu nennen.
-    Werden innerhalb der Objekterkennung einer Komponente mehr als ein Cluster erkannt, so wird das Cluster mit den meisten Datenpunkten ausgewählt.
-    Dieser Ansatz hat in dem vorliegenden Datensatz zwar funktioniert, kann aber bei einer größeren Menge an Durchläufen gegebenenfalls falsche Ergebnisse liefern.
-    \todo{Verbesserung?}
-
-
-
-
+    Ein Ansatz der für die Zuverlässigkeit des Systems könnte durch weitere Kalibrierung der verschiedener Parameter sein.
+    Diese sind unter anderem:
     \begin{itemize}
-        \item Hauptroutine: Cluster mit meisten Datenpunkten: Nicht optimal
-        \item Key-Detector: Deterministisch --> Keypoints können einmalig generiert und in DB gespeichert werden
-        \item Clustering: Ermittlung Epsilon
+        \item Ähnlichkeit im flann-based Matcher
+        \item Epsilon im DBSCAN-Clustering
+        \item min\_samples im DBSCAN-Clustering
+        \item Anzahl der Bilder pro Komponente
     \end{itemize}
+
+    Zudem müssen auch diverse Optimierungen vorgenommen werden, um die Durchlaufzeit zu minimieren.
+    Eine Anlaufstelle hierbei stellt die Key-Point-Ermittlung dar.
+    Da es, wie in \autoref{subsubsec:Key-Detector-Matcher} bereits angesprochen, erfolgt die Generierung der Key-Points deterministisch, wodurch der Prozess bei mehrfacher Wiederholung die identischen Ergebnisse liefert.
+    Aus diesem Grund werden ebenso dieselben Ergebnisse geliefert, wenn die Key-Points der Vorlage-Bilder bereits beim Einpflegen in die digitale Maschinenakte erfolgen würde.
+    Folglich würde der zeitaufwendige Prozess zum einen nicht in der laufenden und zeitkritischen Produktion laufen, sondern zu einem beliebigen Zeitpunkt.
+    Zum anderen würde die Ermittlung der Key-Points pro Bild nur einmal erfolgen und nicht bei jeder Abfrage der Komponente.
+
+    In der laufenden Produktion müssten dadurch nur noch die Key-Points eines Bilds (des Request-Bilds) ermittelt werden.
+    Für die Vorlage-Bilder würden dann zukünftig anstatt der Bilder nur noch die Key-Points mit ihrer Beschreibung aus der Datenbank abgerufen werden.
+
+    Als dritter Verbesserungspunkt ist die statische Festsetzung des Clustering-Parameters Epsilon zu nennen.
+    Die Ermittlung erfolgte in diesem Zusammenhang über visuelle Erkennung im Graphen.
+    Langfristig sollte dies um einen automatisierten Algorithmus ergänzt werden, um auf starke Änderungen von Umgebungsbedingungen reagieren zu können.
+    Sollte das Request-Bild beispielsweise mit einer deutlich besseren oder schlechteren Auflösung aufgenommen werden, kann sich das Clustering-Ergebnis ggf. verschlechtern.
+    Die Schwierigkeit in dieser Automatisierung liegt in dem Erkennen der kritischen Steigung.
+    Da der Graph einer Exponential-Funktion ähnelt, muss der Graph so lange abgeleitet werden, bis sich ein Extremwert bildet, der nicht gleich der oberen Schranke des Definitionsbereichs ist.
+    Anzumerken ist, dass der Graph der Exponential-Funktion lediglich ähnelt, und es folglich möglich ist, die zuvor genannte Bedingung zu erfüllen.
+
    \chapter{Fazit}
+
 
     \begin{itemize}
         \item Einordnung des Projekts in Themenbereich WINF
