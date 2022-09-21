@@ -427,18 +427,33 @@
     Bei den Frontalaufnahmen mit fehlenden Komponenten wurde mit einer Ausnahme immer auf das Fehlen hingewiesen.
 
     Bei den Aufnahmen aus verschiedenen Winkeln konnte sich das System weniger beweisen.
-    Hierbei traten Fehler bereits ab circa + / - 20° auf, sodass teilweise mehrere Komponenten entweder nicht erkannt wurde, oder die Komponenten an falschen Stellen erkannt werden.
+    Hierbei traten Fehler bereits ab circa + / - 20° auf, sodass teilweise mehrere Komponenten entweder nicht erkannt wurden, oder die Komponenten an falschen Stellen erkannt wurden.
 
     \textit{False-Negative}-Fälle traten nur in zwei der 25 Tests auf, wohingegen \textit{False-Positiv}-Fälle deutlich häufiger auftraten.
     Dennoch sind die fehlerfreien Durchläufe in den Tests am meisten vertreten.
 
     Zu bemängeln ist die Durchlaufzeit Objekterkennung.
-    Diese beträgt für einen Durchlauf unter den angegebenen Bedingungen zwischen 120 und 180 Sekunden.
+    Diese beträgt für einen Durchlauf unter den angegebenen Bedingungen zwischen 90 und 180 Sekunden.
     Zurückzuführen ist ein Großteil der Durchlaufzeit auf die Key-Point-Ermittlung mittels SIFT-Algorithmus.
-    Für die Ermittlung der Keypoints eines Bildes wird dabei circa 1,5 bis 2 Sekunden benötigt.
+    Für die Ermittlung der Key-Points eines Bildes werden dabei circa 1,5 bis 2 Sekunden benötigt.
+    Bei den hier eingesetzten 57 Bildern werden allein durch diesen Prozess bereits 85 bis 114 Sekunden benötigt.
+    Der restliche Teil des Algorithmus spielt in der Durchlaufzeit eine untergeordnete Rolle.
 
 
-    \section{Reflektion}
+    \section{Weiterentwicklung und Reflektion}
+    Wie anhand des Testergebnisses zu sehen ist, leistet das Modul \textit{DPP Visual} für den Anfang gute Ergebnisse.
+    Innerhalb der bislang umgesetzten Funktionen ist einerseits die Fehleranfälligkeit bei Aufnahmen außerhalb der Frontalperspektive verbesserungswürdig.
+    Andererseits müssen auch diverse Optimierungen vorgenommen werden, um die Durchlaufzeit zu minimieren.
+
+    Ebenso im Rahmen der Implementierung wurden Elemente umgesetzt, die für künftige Weiterentwicklungen optimiert werden können.
+    Als ein Beispiel ist hierbei die Auswahl des Clusters in der Hauptroutine zu nennen.
+    Werden innerhalb der Objekterkennung einer Komponente mehr als ein Cluster erkannt, so wird das Cluster mit den meisten Datenpunkten ausgewählt.
+    Dieser Ansatz hat in dem vorliegenden Datensatz zwar funktioniert, kann aber bei einer größeren Menge an Durchläufen gegebenenfalls falsche Ergebnisse liefern.
+    \todo{Verbesserung?}
+
+
+
+
     \begin{itemize}
         \item Hauptroutine: Cluster mit meisten Datenpunkten: Nicht optimal
         \item Key-Detector: Deterministisch --> Keypoints können einmalig generiert und in DB gespeichert werden
