@@ -318,8 +318,6 @@
         \label{tab:matrix-dbscan}
     \end{table}
 
-    Auf die Wahl der Parameter wird in \autoref{sec:umsetzung} weiter eingegangen.
-
     Wie die Funktionsweise von \ac{DBSCAN} zeigt, ist die Zahl der Cluster im Gegensatz zu den meisten anderen Cluster-Algorithmen variabel.
     Diese Eigenschaft ist für die Implementierung der Objekterkennung dahingehend vorteilhaft, dass keine Cluster \glqq erzwungen\grqq{} werden.
     Sollte ein gesuchtes Objekt in dem Request-Bild nicht vorhanden sein, würde das Clustering alle Datenpunkte als Rauschen oder Outlier kennzeichnen, wodurch kein Cluster entstünde.
@@ -430,7 +428,7 @@
     Diese werden folglich zurückgegeben.
 
 
-    \chapter{Evaluation}
+    \chapter{Evaluation} \label{ch:evaluation}
     Im Zuge der Evaluation sollte die Funktionsweise des entwickelten Systems bewertet werden.
     Hierbei handelt es sich sowohl um die digitalen Maschinenakte, als auch auf das Modul \ac{DPP} Visual.
     Aufgrund der Größe des Projekts und der entsprechend kurzen Zeit des Praktikums erfolgte die Evaluation nur im begrenzten Rahmen.
@@ -458,27 +456,33 @@
     Als letztes Testszenario wurden die Aufnahmen verwendet, auf denen Komponenten fehlen.
 
     \section{Ergebnis}
-    Das Ergebnis der Evaluation zeigte, dass das Tool grundlegend funktioniert.
-    Vor allem bei den Frontalaufnahmen wurden mit wenigen Ausnahmen alle gesuchten Komponenten erkannt.
-    Die Markierung auf den Bildern stimmten dabei jedoch nicht immer mit den Außenkanten der Komponenten überein.
-    Bei den Frontalaufnahmen mit fehlenden Komponenten wurde mit einer Ausnahme immer auf das Fehlen hingewiesen.
+    Bei den Durchläufen mit Frontalaufnahmen wurden mit wenigen Ausnahmen alle gesuchten Komponenten erkannt.
+    Lediglich die Markierung auf den Bildern stimmten dabei jedoch nicht immer mit den Außenkanten der Komponenten überein.
+    Bei Frontalaufnahmen auf denen Komponenten unkenntlich gemacht wurden, wurde mit einer Ausnahme immer auf das Fehlen hingewiesen.
 
-    Bei den Aufnahmen aus verschiedenen Winkeln konnte sich das System weniger beweisen.
+    Bei den Aufnahmen aus verschiedenen Winkel stieg die Fehlerquote an.
     Hierbei traten Fehler bereits ab circa + / - 20° auf, sodass teilweise mehrere Komponenten entweder nicht erkannt wurden, oder die Komponenten an falschen Stellen erkannt wurden.
 
     \textit{False-Negative}-Fälle traten nur in zwei der 25 Tests auf, wohingegen \textit{False-Positiv}-Fälle deutlich häufiger auftraten.
     Dennoch sind die fehlerfreien Durchläufe in den Tests am meisten vertreten.
 
+    Die Durchlaufzeiten für die Testdurchläufe bewegten sich im Bereich zwischen 90 und 180 Sekunden.
+    Ein Tracking der Zeiten der Einzelprozesse zeigte, dass ein Großteil der Durchlaufzeit auf die \ac{KP}-Ermittlung mittels \ac{SIFT}-Algorithmus zurückzuführen ist.
     Zu bemängeln ist die Durchlaufzeit Objekterkennung.
-    Diese beträgt für einen Durchlauf unter den angegebenen Bedingungen zwischen 90 und 180 Sekunden.
-    Zurückzuführen ist ein Großteil der Durchlaufzeit auf die \ac{KP}-Ermittlung mittels \ac{SIFT}-Algorithmus.
     Für die Ermittlung der \acp{KP} eines Bildes werden dabei circa 1,5 bis 2 Sekunden benötigt.
     Bei den hier eingesetzten 57 Bildern werden allein durch diesen Prozess bereits 85 bis 114 Sekunden benötigt.
     Der restliche Teil des Algorithmus spielt in der Durchlaufzeit eine untergeordnete Rolle.
 
+    \section{Limitationen}
+    Die Evaluation konnte zeigen, dass das Modul \textit{DPP Visual} grundlegend funktioniert.
+    Während Frontalaufnahmen für das System weitestgehend unproblematisch sind, sinkt die Zuverlässigkeit mit ansteigendem Aufnahmewinkel.
+    Ab einem Winkel von + / - 20° werden die Ergebnisse zu unzuverlässig, um das Tool sinnvoll einzusetzen.
 
-    \section{Reflektion und Ausblick}
-    Wie anhand des Testergebnisses zu sehen ist, leistet das Modul \ac{DPP} Visual für den Anfang gute Ergebnisse.
+    Ebenso die Durchlaufzeit ist optimierungsfähig.
+    Auch wenn hierfür keine Anforderung durch den Praxispartner definiert wurde, kann eine Durchlaufzeit von mehreren Minuten den Produktionsprozess stören.
+
+    \chapter{Reflektion und Ausblick}
+    Wie anhand der Evaluation in \autoref{ch:evaluation} zu sehen ist, leistet das Modul \ac{DPP} Visual für den Anfang gute Ergebnisse.
     Innerhalb der bislang umgesetzten Funktionen ist einerseits die Fehleranfälligkeit bei Aufnahmen außerhalb der Frontalperspektive verbesserungswürdig.
     Ein Ansatz für die Steigerung der Zuverlässigkeit des Systems könnte die eine zusätzliche Kalibrierung der verschiedener Parameter sein.
     Diese sind unter anderem:
@@ -507,7 +511,14 @@
     Da der Graph einer Exponential-Funktion ähnelt, muss der Graph so lange abgeleitet werden, bis sich ein Extremwert bildet, der nicht gleich der oberen Schranke des Definitionsbereichs ist.
     Anzumerken ist, dass der Graph der Exponential-Funktion lediglich ähnelt, und es folglich möglich ist, die zuvor genannte Bedingung zu erfüllen.
 
-   \chapter{Fazit}
+    Dennoch konnte durch die Praktikumsleistung, die sich auf die Umsetzung eines Grobkonzepts und die anfängliche Implementierung zweier Teilmodule fokussierte ein initialer Eckstein gesetzt werden.
+    Dieser kann zukünftig für Weiterentwicklungen genutzt werden und damit einen Beitrag zur Qualitätssteigerung im Schaltanlagenbau liefern.
+
+    \bibliography{main}
+    \listoffigures
+    \listoftables
+    \backmatter
+    \chapter{Feedback zum Praktikum}
     Zusammenfassend kann das Praxisprojekt als Erfolg betitelt werden.
     Auch wenn das Ergebnis der Implementierung kein verkaufsfertiges betriebliches Anwendungssystem darstellt, wurde durch das Praxisprojekt ein
     initialer Impuls geleistet, an dem Praxispartner Mack NC Engineering einhaken und künftig weiterentwickeln kann.
@@ -530,8 +541,6 @@
 
     Im Allgemeinen konnten aus dem Praxisprojekt zahlreiche Einblicke in die Unternehmenswelt und den Alltag eines Wirtschaftsinformatikers erlangt werden.
 
-    \bibliography{main}
-    \backmatter
     %\input{wochenbericht.tex}
     \input{acronym.tex}
     \input{erklaerung-unibw}
